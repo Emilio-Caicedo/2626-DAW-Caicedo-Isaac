@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmiTech Store - Tecnología que conecta contigo</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #222222;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: white;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+        }
+
+        .logo img {
+            height: 80px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #0D47A1;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #2196F3;
+        }
+
+        .btn {
+            background-color: #FF9800;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .banner {
+            background-image: url("imagenes/banner-principal.jpg");
+            background-size: cover;
+            background-position: center;
+            height: 550px;
+            display: flex;
+            align-items: center;
+        }
+
+        .banner-texto {
+            width: 50%;
+            padding-left: 80px;
+            color: white;
+        }
+
+        .banner-texto h1 {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        .banner-texto p {
+            font-size: 22px;
+            margin-bottom: 25px;
+        }
+
+        main {
+            width: 90%;
+            margin: auto;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        h2 {
+            color: #0D47A1;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quienes {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .quienes img {
+            width: 45%;
+            border-radius: 15px;
+        }
+
+        .quienes p {
+            text-align: justify;
+        }
+
+        .productos img {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .productos ul {
+            padding-left: 20px;
+        }
+
+        .productos li {
+            margin-bottom: 10px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border-radius: 15px;
+        }
+
+        aside {
+            background-color: #f4f4f4;
+            padding: 30px;
+            border-left: 5px solid #FF9800;
+            margin: 40px 0;
+            border-radius: 10px;
+        }
+
+        .contacto {
+            text-align: center;
+        }
+
+        .contacto a {
+            color: #0D47A1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #0D47A1;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logo">
+            <img src="imagenes/logo-emitech.png" alt="Logo EmiTech Store">
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#quienes">Quiénes Somos</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+
+        <a href="#productos" class="btn">Ver Productos</a>
+
+    </header>
+
+    <main>
+
+        <section id="inicio" class="banner">
+
+            <div class="banner-texto">
+
+            </div>
+
+        </section>
+
+        <section id="quienes">
+
+            <h2>Quiénes Somos</h2>
+
+            <div class="quienes">
+
+                <img src="imagenes/quienes-somos.jpg" alt="Quiénes Somos">
+
+                <article>
+
+                    <p>
+                        EmiTech Store es un proyecto tecnológico orientado a la comercialización de computadoras,
+                        laptops, accesorios y componentes informáticos de alta calidad. Nuestra misión es brindar
+                        soluciones tecnológicas confiables para estudiantes, profesionales, emprendedores y empresas,
+                        facilitando el acceso a equipos modernos y productos innovadores. Buscamos ofrecer una
+                        experiencia de compra sencilla, segura y eficiente, proporcionando información detallada sobre
+                        especificaciones técnicas, precios y características de cada producto. Además, promovemos el
+                        uso de la tecnología como una herramienta fundamental para el aprendizaje, el trabajo y el
+                        desarrollo personal. EmiTech Store nace como una propuesta académica dentro de la carrera de
+                        Tecnologías de la Información y Comunicación, con una visión de crecimiento y expansión hacia
+                        el comercio electrónico especializado en productos tecnológicos.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+        <section id="productos" class="productos">
+
+            <h2>Nuestros Productos</h2>
+
+            <img src="imagenes/productos.jpg" alt="Productos Tecnológicos">
+
+            <ul>
+                <li>Computadoras de escritorio.</li>
+                <li>Laptops para estudiantes y profesionales.</li>
+                <li>Monitores de alta resolución.</li>
+                <li>Teclados, mouse y audífonos.</li>
+                <li>Memorias RAM y discos SSD.</li>
+                <li>Tarjetas gráficas y componentes.</li>
+                <li>Accesorios tecnológicos.</li>
+            </ul>
+
+        </section>
+
+        <section>
+
+            <h2>Video Informativo</h2>
+
+            <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/YyKTeItQTBo?si=J3SlltmnMKx-fbdq"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+    </iframe>
+
+        </section>
+
+        <aside>
+
+            <h2>Información Adicional</h2>
+
+            <p><strong>Promoción:</strong> 15% de descuento en laptops seleccionadas.</p>
+            <p><strong>Horario:</strong> Lunes a Viernes de 08h00 a 17h00.</p>
+            <p><strong>Garantía:</strong> Todos nuestros productos cuentan con garantía.</p>
+
+        </aside>
+
+        <section id="contacto" class="contacto">
+
+            <h2>Contacto</h2>
+
+            <p><strong>Correo:</strong> emiliourina.2017@gmail.com</p>
+            <p><strong>Teléfono:</strong> 0982500251</p>
+            <p><strong>Dirección:</strong> Gonzalo Pizarro, Sucumbios - Ecuador</p>
+
+            <br>
+
+            <a href="https://facebook.com" target="_blank">Facebook</a> |
+            <a href="https://instagram.com" target="_blank">Instagram</a> |
+            <a href="https://tiktok.com" target="_blank">TikTok</a>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <p><strong>Isaac Caicedo</strong></p>
+        <p>Desarrollo de Aplicaciones Web</p>
+        <p>Universidad Estatal Amazónica - 2026</p>
+
+    </footer>
+
+</body>
+
+</html>
