@@ -1,40 +1,164 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     const formulario = document.getElementById("formRegistro");
+
     const nombreProducto = document.getElementById("nombreProducto");
     const descripcionProducto = document.getElementById("descripcionProducto");
     const categoriaProducto = document.getElementById("categoriaProducto");
+
+    const mensajeNombre = document.getElementById("mensajeNombre");
+    const mensajeDescripcion = document.getElementById("mensajeDescripcion");
+    const mensajeCategoria = document.getElementById("mensajeCategoria");
     const mensajeValidacion = document.getElementById("mensajeValidacion");
+
     const listaRegistros = document.getElementById("listaRegistros");
     const totalRegistros = document.getElementById("totalRegistros");
-    const mensajeInicial = document.getElementById("mensajeInicial");
+
+    nombreProducto.addEventListener("input", validarNombre);
+    nombreProducto.addEventListener("blur", validarNombre);
+
+    descripcionProducto.addEventListener("input", validarDescripcion);
+    descripcionProducto.addEventListener("blur", validarDescripcion);
+
+    categoriaProducto.addEventListener("change", validarCategoria);
+    categoriaProducto.addEventListener("blur", validarCategoria);
 
     formulario.addEventListener("submit", function (evento) {
         evento.preventDefault();
+
+        const nombreValido = validarNombre();
+        const descripcionValida = validarDescripcion();
+        const categoriaValida = validarCategoria();
+
+        if (!nombreValido || !descripcionValida || !categoriaValida) {
+            mostrarMensajeGeneral(
+                "Revise los campos marcados en rojo antes de registrar la solicitud.",
+                "danger"
+            );
+            return;
+        }
 
         const nombre = nombreProducto.value.trim();
         const descripcion = descripcionProducto.value.trim();
         const categoria = categoriaProducto.value.trim();
 
-        if (nombre === "" || descripcion === "" || categoria === "") {
-            mostrarMensaje("Por favor, complete todos los campos antes de agregar el registro.", "danger");
-            return;
-        }
-
         crearRegistro(nombre, descripcion, categoria);
 
         formulario.reset();
+        limpiarValidaciones();
         nombreProducto.focus();
 
-        mostrarMensaje("Registro agregado correctamente.", "success");
+        mostrarMensajeGeneral(
+            "Solicitud registrada correctamente.",
+            "success"
+        );
     });
 
+    function validarNombre() {
+        const nombre = nombreProducto.value.trim();
+
+        if (nombre === "") {
+            mostrarEstadoCampo(
+                nombreProducto,
+                mensajeNombre,
+                "El nombre de la solicitud es obligatorio.",
+                "invalido"
+            );
+            return false;
+        }
+
+        if (nombre.length < 3) {
+            mostrarEstadoCampo(
+                nombreProducto,
+                mensajeNombre,
+                "El nombre debe tener mínimo 3 caracteres.",
+                "invalido"
+            );
+            return false;
+        }
+
+        mostrarEstadoCampo(
+            nombreProducto,
+            mensajeNombre,
+            "Nombre válido.",
+            "valido"
+        );
+        return true;
+    }
+
+    function validarDescripcion() {
+        const descripcion = descripcionProducto.value.trim();
+
+        if (descripcion === "") {
+            mostrarEstadoCampo(
+                descripcionProducto,
+                mensajeDescripcion,
+                "La descripción es obligatoria.",
+                "invalido"
+            );
+            return false;
+        }
+
+        if (descripcion.length < 15) {
+            mostrarEstadoCampo(
+                descripcionProducto,
+                mensajeDescripcion,
+                "La descripción debe tener mínimo 15 caracteres.",
+                "invalido"
+            );
+            return false;
+        }
+
+        mostrarEstadoCampo(
+            descripcionProducto,
+            mensajeDescripcion,
+            "Descripción válida.",
+            "valido"
+        );
+        return true;
+    }
+
+    function validarCategoria() {
+        const categoria = categoriaProducto.value.trim();
+
+        if (categoria === "") {
+            mostrarEstadoCampo(
+                categoriaProducto,
+                mensajeCategoria,
+                "Debe seleccionar una categoría o tipo de solicitud.",
+                "invalido"
+            );
+            return false;
+        }
+
+        mostrarEstadoCampo(
+            categoriaProducto,
+            mensajeCategoria,
+            "Categoría seleccionada correctamente.",
+            "valido"
+        );
+        return true;
+    }
+
+    function mostrarEstadoCampo(campo, contenedorMensaje, texto, estado) {
+        campo.classList.remove("is-valid", "is-invalid");
+
+        if (estado === "valido") {
+            campo.classList.add("is-valid");
+            contenedorMensaje.className = "valid-feedback d-block campo-mensaje";
+        } else {
+            campo.classList.add("is-invalid");
+            contenedorMensaje.className = "invalid-feedback d-block campo-mensaje";
+        }
+
+        contenedorMensaje.textContent = texto;
+    }
+
     function crearRegistro(nombre, descripcion, categoria) {
+        const mensajeInicial = document.getElementById("mensajeInicial");
 
-        const mensajeInicialActual = document.getElementById("mensajeInicial");
-
-        if (mensajeInicialActual) {
-            mensajeInicialActual.remove();
+        if (mensajeInicial) {
+            mensajeInicial.remove();
         }
 
         const columna = document.createElement("div");
@@ -65,9 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
         botonEliminar.addEventListener("click", function () {
             columna.remove();
             actualizarTotal();
-            mostrarMensaje("Registro eliminado correctamente.", "warning");
 
-            if (listaRegistros.children.length === 0) {
+            mostrarMensajeGeneral(
+                "Solicitud eliminada correctamente.",
+                "success"
+            );
+
+            if (listaRegistros.querySelectorAll(".tarjeta-registro").length === 0) {
                 mostrarMensajeInicial();
             }
         });
@@ -86,17 +214,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function actualizarTotal() {
-        totalRegistros.textContent = listaRegistros.children.length;
+        const cantidadRegistros = listaRegistros.querySelectorAll(".tarjeta-registro").length;
+        totalRegistros.textContent = cantidadRegistros;
     }
 
-    function mostrarMensaje(texto, tipo) {
+    function mostrarMensajeGeneral(texto, tipo) {
         mensajeValidacion.textContent = texto;
         mensajeValidacion.className = "alert alert-" + tipo + " mt-3";
 
         setTimeout(function () {
             mensajeValidacion.textContent = "";
             mensajeValidacion.className = "mt-3";
-        }, 3000);
+        }, 3500);
+    }
+
+    function limpiarValidaciones() {
+        nombreProducto.classList.remove("is-valid", "is-invalid");
+        descripcionProducto.classList.remove("is-valid", "is-invalid");
+        categoriaProducto.classList.remove("is-valid", "is-invalid");
+
+        mensajeNombre.textContent = "";
+        mensajeDescripcion.textContent = "";
+        mensajeCategoria.textContent = "";
+
+        mensajeNombre.className = "campo-mensaje";
+        mensajeDescripcion.className = "campo-mensaje";
+        mensajeCategoria.className = "campo-mensaje";
     }
 
     function mostrarMensajeInicial() {

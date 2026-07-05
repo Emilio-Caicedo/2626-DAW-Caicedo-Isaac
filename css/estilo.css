@@ -196,6 +196,7 @@ section {
     border-radius: 14px;
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.10);
     height: 100%;
+    animation: aparecerRegistro 0.3s ease;
 }
 
 .tarjeta-registro .card-body {
@@ -211,6 +212,36 @@ section {
     font-size: 0.85rem;
     font-weight: bold;
     margin-bottom: 10px;
+}
+
+/* Mensajes dinámicos de validación */
+
+.campo-mensaje {
+    min-height: 22px;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+}
+
+@keyframes aparecerRegistro {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Video */
