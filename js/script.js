@@ -1,5 +1,73 @@
 document.addEventListener("DOMContentLoaded", function () {
+const productos = [
 
+{
+nombre:"Laptops y computadoras",
+descripcion:"Equipos ideales para estudiar y trabajar.",
+imagen:"imagenes/laptops-computadoras.jpg"
+},
+
+{
+nombre:"Accesorios tecnológicos",
+descripcion:"Teclados, mouse, audífonos y accesorios.",
+imagen:"imagenes/accesorios-tecnologicos.jpg"
+},
+
+{
+nombre:"Componentes informáticos",
+descripcion:"Memorias RAM, SSD y componentes.",
+imagen:"imagenes/componentes-informaticos.jpg"
+}
+
+];
+
+const listaProductos =
+document.getElementById("listaProductos");
+
+
+productos.forEach(producto=>{
+if(productos.length===0){
+
+listaProductos.innerHTML=`
+
+<div class="alert alert-warning">
+No existen productos disponibles.
+</div>
+
+`;
+
+}
+
+listaProductos.innerHTML += `
+
+<div class="col-lg-4 col-md-6 col-sm-12">
+
+<div class="card">
+
+<img src="${producto.imagen}" 
+class="card-img-top">
+
+<div class="card-body">
+
+<h3 class="text-primary">
+${producto.nombre}
+</h3>
+
+
+<p>
+${producto.descripcion}
+</p>
+
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
     const formulario = document.getElementById("formRegistro");
 
     const nombreProducto = document.getElementById("nombreProducto");
@@ -154,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
         contenedorMensaje.textContent = texto;
     }
 
+    // Renderizado dinámico de contenido generado por usuario
     function crearRegistro(nombre, descripcion, categoria) {
         const mensajeInicial = document.getElementById("mensajeInicial");
 
