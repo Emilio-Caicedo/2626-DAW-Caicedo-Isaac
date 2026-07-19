@@ -1,147 +1,325 @@
 document.addEventListener("DOMContentLoaded", function () {
-const productos = [
 
-{
-nombre:"Laptops y computadoras",
-descripcion:"Equipos ideales para estudiar y trabajar.",
-imagen:"imagenes/laptops-computadoras.jpg"
-},
+    // Arreglo de objetos que contiene la información de los productos
+    const productos = [
+        {
+            nombre: "Laptops y computadoras",
+            descripcion: "Equipos ideales para estudiar, trabajar, emprender y desarrollar diferentes actividades profesionales.",
+            imagen: "imagenes/laptops-computadoras.jpg"
+        },
+        {
+            nombre: "Accesorios tecnológicos",
+            descripcion: "Teclados, mouse, audífonos y diferentes accesorios para mejorar la experiencia de uso de tus equipos.",
+            imagen: "imagenes/accesorios-tecnologicos.jpg"
+        },
+        {
+            nombre: "Componentes informáticos",
+            descripcion: "Memorias RAM, discos SSD, tarjetas gráficas y componentes para actualizar o mejorar una computadora.",
+            imagen: "imagenes/componentes-informaticos.jpg"
+        }
+    ];
 
-{
-nombre:"Accesorios tecnológicos",
-descripcion:"Teclados, mouse, audífonos y accesorios.",
-imagen:"imagenes/accesorios-tecnologicos.jpg"
-},
+    // Elementos relacionados con los productos
+    const listaProductos = document.getElementById("listaProductos");
 
-{
-nombre:"Componentes informáticos",
-descripcion:"Memorias RAM, SSD y componentes.",
-imagen:"imagenes/componentes-informaticos.jpg"
-}
+    const modalDetalleProducto = document.getElementById(
+        "modalDetalleProducto"
+    );
 
-];
+    const modalProductoImagen = document.getElementById(
+        "modalProductoImagen"
+    );
 
-const listaProductos =
-document.getElementById("listaProductos");
+    const modalProductoNombre = document.getElementById(
+        "modalProductoNombre"
+    );
 
+    const modalProductoDescripcion = document.getElementById(
+        "modalProductoDescripcion"
+    );
 
-productos.forEach(producto=>{
-if(productos.length===0){
+    // Función para mostrar los productos dinámicamente
+    function mostrarProductos() {
 
-listaProductos.innerHTML=`
+        listaProductos.innerHTML = "";
 
-<div class="alert alert-warning">
-No existen productos disponibles.
-</div>
+        // Corrección: la condición se verifica antes del recorrido
+        if (productos.length === 0) {
 
-`;
+            listaProductos.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-warning text-center" role="alert">
+                        No existen productos disponibles actualmente.
+                    </div>
+                </div>
+            `;
 
-}
+            return;
+        }
 
-listaProductos.innerHTML += `
+        productos.forEach(function (producto, indice) {
 
-<div class="col-lg-4 col-md-6 col-sm-12">
+            listaProductos.innerHTML += `
+                <div class="col-lg-4 col-md-6 col-sm-12">
 
-<div class="card">
+                    <article class="card tarjeta-producto h-100">
 
-<img src="${producto.imagen}" 
-class="card-img-top">
+                        <img
+                            src="${producto.imagen}"
+                            class="card-img-top"
+                            alt="${producto.nombre}"
+                            loading="lazy"
+                        >
 
-<div class="card-body">
+                        <div class="card-body">
 
-<h3 class="text-primary">
-${producto.nombre}
-</h3>
+                            <h3 class="card-title h4 text-primary">
+                                ${producto.nombre}
+                            </h3>
 
+                            <p class="card-text">
+                                ${producto.descripcion}
+                            </p>
 
-<p>
-${producto.descripcion}
-</p>
+                            <button
+                                type="button"
+                                class="btn btn-outline-primary mt-auto btn-detalle-producto"
+                                data-indice="${indice}"
+                            >
+                                Ver detalles
+                            </button>
 
+                        </div>
 
-</div>
+                    </article>
 
-</div>
+                </div>
+            `;
+        });
 
-</div>
+        activarBotonesDetalles();
+    }
 
-`;
+    // Asigna eventos a los botones creados dinámicamente
+    function activarBotonesDetalles() {
 
-});
+        const botonesDetalles = document.querySelectorAll(
+            ".btn-detalle-producto"
+        );
+
+        botonesDetalles.forEach(function (boton) {
+
+            boton.addEventListener("click", function () {
+
+                const indiceProducto = Number(
+                    boton.dataset.indice
+                );
+
+                mostrarDetalleProducto(indiceProducto);
+
+            });
+
+        });
+
+    }
+
+    // Muestra la información del producto dentro del modal Bootstrap
+    function mostrarDetalleProducto(indiceProducto) {
+
+        const productoSeleccionado = productos[indiceProducto];
+
+        if (!productoSeleccionado) {
+            return;
+        }
+
+        modalProductoImagen.src = productoSeleccionado.imagen;
+
+        modalProductoImagen.alt =
+            "Imagen de " + productoSeleccionado.nombre;
+
+        modalProductoNombre.textContent =
+            productoSeleccionado.nombre;
+
+        modalProductoDescripcion.textContent =
+            productoSeleccionado.descripcion;
+
+        const instanciaModal =
+            bootstrap.Modal.getOrCreateInstance(
+                modalDetalleProducto
+            );
+
+        instanciaModal.show();
+    }
+
+    // Renderizado inicial de productos
+    mostrarProductos();
+
+    // Elementos relacionados con el formulario de solicitudes
     const formulario = document.getElementById("formRegistro");
 
-    const nombreProducto = document.getElementById("nombreProducto");
-    const descripcionProducto = document.getElementById("descripcionProducto");
-    const categoriaProducto = document.getElementById("categoriaProducto");
+    const nombreProducto =
+        document.getElementById("nombreProducto");
 
-    const mensajeNombre = document.getElementById("mensajeNombre");
-    const mensajeDescripcion = document.getElementById("mensajeDescripcion");
-    const mensajeCategoria = document.getElementById("mensajeCategoria");
-    const mensajeValidacion = document.getElementById("mensajeValidacion");
+    const descripcionProducto =
+        document.getElementById("descripcionProducto");
 
-    const listaRegistros = document.getElementById("listaRegistros");
-    const totalRegistros = document.getElementById("totalRegistros");
+    const categoriaProducto =
+        document.getElementById("categoriaProducto");
 
-    nombreProducto.addEventListener("input", validarNombre);
-    nombreProducto.addEventListener("blur", validarNombre);
+    const mensajeNombre =
+        document.getElementById("mensajeNombre");
 
-    descripcionProducto.addEventListener("input", validarDescripcion);
-    descripcionProducto.addEventListener("blur", validarDescripcion);
+    const mensajeDescripcion =
+        document.getElementById("mensajeDescripcion");
 
-    categoriaProducto.addEventListener("change", validarCategoria);
-    categoriaProducto.addEventListener("blur", validarCategoria);
+    const mensajeCategoria =
+        document.getElementById("mensajeCategoria");
 
+    const mensajeValidacion =
+        document.getElementById("mensajeValidacion");
+
+    const listaRegistros =
+        document.getElementById("listaRegistros");
+
+    const totalRegistros =
+        document.getElementById("totalRegistros");
+
+    const botonAgregarSolicitud =
+        document.getElementById("btnAgregarSolicitud");
+
+    const textoBotonSolicitud =
+        document.getElementById("textoBotonSolicitud");
+
+    const spinnerRegistro =
+        document.getElementById("spinnerRegistro");
+
+    // Eventos dinámicos de validación
+    nombreProducto.addEventListener(
+        "input",
+        validarNombre
+    );
+
+    nombreProducto.addEventListener(
+        "blur",
+        validarNombre
+    );
+
+    descripcionProducto.addEventListener(
+        "input",
+        validarDescripcion
+    );
+
+    descripcionProducto.addEventListener(
+        "blur",
+        validarDescripcion
+    );
+
+    categoriaProducto.addEventListener(
+        "change",
+        validarCategoria
+    );
+
+    categoriaProducto.addEventListener(
+        "blur",
+        validarCategoria
+    );
+
+    // Evento para registrar una solicitud
     formulario.addEventListener("submit", function (evento) {
+
         evento.preventDefault();
 
         const nombreValido = validarNombre();
+
         const descripcionValida = validarDescripcion();
+
         const categoriaValida = validarCategoria();
 
-        if (!nombreValido || !descripcionValida || !categoriaValida) {
+        if (
+            !nombreValido ||
+            !descripcionValida ||
+            !categoriaValida
+        ) {
+
             mostrarMensajeGeneral(
                 "Revise los campos marcados en rojo antes de registrar la solicitud.",
                 "danger"
             );
+
             return;
         }
 
-        const nombre = nombreProducto.value.trim();
-        const descripcion = descripcionProducto.value.trim();
-        const categoria = categoriaProducto.value.trim();
+        const nombre =
+            nombreProducto.value.trim();
 
-        crearRegistro(nombre, descripcion, categoria);
+        const descripcion =
+            descripcionProducto.value.trim();
 
-        formulario.reset();
-        limpiarValidaciones();
-        nombreProducto.focus();
+        const categoria =
+            categoriaProducto.value.trim();
 
-        mostrarMensajeGeneral(
-            "Solicitud registrada correctamente.",
-            "success"
-        );
+        // Muestra el spinner Bootstrap
+        cambiarEstadoCarga(true);
+
+        // Simulación de un proceso de carga
+        setTimeout(function () {
+
+            try {
+
+                crearRegistro(
+                    nombre,
+                    descripcion,
+                    categoria
+                );
+
+                formulario.reset();
+
+                limpiarValidaciones();
+
+                mostrarMensajeGeneral(
+                    "Solicitud registrada correctamente.",
+                    "success"
+                );
+
+            } finally {
+
+                cambiarEstadoCarga(false);
+
+                nombreProducto.focus();
+
+            }
+
+        }, 900);
+
     });
 
+    // Validación del nombre
     function validarNombre() {
-        const nombre = nombreProducto.value.trim();
+
+        const nombre =
+            nombreProducto.value.trim();
 
         if (nombre === "") {
+
             mostrarEstadoCampo(
                 nombreProducto,
                 mensajeNombre,
                 "El nombre de la solicitud es obligatorio.",
                 "invalido"
             );
+
             return false;
         }
 
         if (nombre.length < 3) {
+
             mostrarEstadoCampo(
                 nombreProducto,
                 mensajeNombre,
                 "El nombre debe tener mínimo 3 caracteres.",
                 "invalido"
             );
+
             return false;
         }
 
@@ -151,29 +329,37 @@ ${producto.descripcion}
             "Nombre válido.",
             "valido"
         );
+
         return true;
     }
 
+    // Validación de la descripción
     function validarDescripcion() {
-        const descripcion = descripcionProducto.value.trim();
+
+        const descripcion =
+            descripcionProducto.value.trim();
 
         if (descripcion === "") {
+
             mostrarEstadoCampo(
                 descripcionProducto,
                 mensajeDescripcion,
                 "La descripción es obligatoria.",
                 "invalido"
             );
+
             return false;
         }
 
         if (descripcion.length < 15) {
+
             mostrarEstadoCampo(
                 descripcionProducto,
                 mensajeDescripcion,
                 "La descripción debe tener mínimo 15 caracteres.",
                 "invalido"
             );
+
             return false;
         }
 
@@ -183,19 +369,25 @@ ${producto.descripcion}
             "Descripción válida.",
             "valido"
         );
+
         return true;
     }
 
+    // Validación de categoría
     function validarCategoria() {
-        const categoria = categoriaProducto.value.trim();
+
+        const categoria =
+            categoriaProducto.value.trim();
 
         if (categoria === "") {
+
             mostrarEstadoCampo(
                 categoriaProducto,
                 mensajeCategoria,
                 "Debe seleccionar una categoría o tipo de solicitud.",
                 "invalido"
             );
+
             return false;
         }
 
@@ -205,123 +397,307 @@ ${producto.descripcion}
             "Categoría seleccionada correctamente.",
             "valido"
         );
+
         return true;
     }
 
-    function mostrarEstadoCampo(campo, contenedorMensaje, texto, estado) {
-        campo.classList.remove("is-valid", "is-invalid");
+    // Modifica las clases Bootstrap según el resultado de validación
+    function mostrarEstadoCampo(
+        campo,
+        contenedorMensaje,
+        texto,
+        estado
+    ) {
+
+        campo.classList.remove(
+            "is-valid",
+            "is-invalid"
+        );
 
         if (estado === "valido") {
+
             campo.classList.add("is-valid");
-            contenedorMensaje.className = "valid-feedback d-block campo-mensaje";
+
+            contenedorMensaje.className =
+                "valid-feedback d-block campo-mensaje";
+
         } else {
+
             campo.classList.add("is-invalid");
-            contenedorMensaje.className = "invalid-feedback d-block campo-mensaje";
+
+            contenedorMensaje.className =
+                "invalid-feedback d-block campo-mensaje";
+
         }
 
         contenedorMensaje.textContent = texto;
     }
 
-    // Renderizado dinámico de contenido generado por usuario
-    function crearRegistro(nombre, descripcion, categoria) {
-        const mensajeInicial = document.getElementById("mensajeInicial");
+    // Controla el spinner y el estado del botón
+    function cambiarEstadoCarga(cargando) {
+
+        botonAgregarSolicitud.disabled = cargando;
+
+        spinnerRegistro.classList.toggle(
+            "d-none",
+            !cargando
+        );
+
+        if (cargando) {
+
+            textoBotonSolicitud.textContent =
+                "Procesando solicitud...";
+
+        } else {
+
+            textoBotonSolicitud.textContent =
+                "Agregar solicitud";
+
+        }
+    }
+
+    // Renderizado dinámico de una solicitud creada por el usuario
+    function crearRegistro(
+        nombre,
+        descripcion,
+        categoria
+    ) {
+
+        const mensajeInicial =
+            document.getElementById("mensajeInicial");
 
         if (mensajeInicial) {
             mensajeInicial.remove();
         }
 
-        const columna = document.createElement("div");
-        columna.className = "col-lg-6 col-md-6 col-sm-12";
+        const columna =
+            document.createElement("div");
 
-        const tarjeta = document.createElement("div");
-        tarjeta.className = "card tarjeta-registro";
+        columna.className =
+            "col-lg-6 col-md-6 col-sm-12";
 
-        const cuerpoTarjeta = document.createElement("div");
-        cuerpoTarjeta.className = "card-body";
+        const tarjeta =
+            document.createElement("article");
 
-        const etiquetaCategoria = document.createElement("span");
-        etiquetaCategoria.className = "categoria-registro";
-        etiquetaCategoria.textContent = categoria;
+        tarjeta.className =
+            "card tarjeta-registro";
 
-        const titulo = document.createElement("h4");
-        titulo.className = "card-title h5 text-primary";
-        titulo.textContent = nombre;
+        const cuerpoTarjeta =
+            document.createElement("div");
 
-        const textoDescripcion = document.createElement("p");
-        textoDescripcion.className = "card-text";
-        textoDescripcion.textContent = descripcion;
+        cuerpoTarjeta.className =
+            "card-body";
 
-        const botonEliminar = document.createElement("button");
-        botonEliminar.className = "btn btn-outline-danger btn-sm";
-        botonEliminar.textContent = "Eliminar";
+        const etiquetaCategoria =
+            document.createElement("span");
 
-        botonEliminar.addEventListener("click", function () {
-            columna.remove();
-            actualizarTotal();
+        etiquetaCategoria.className =
+            "categoria-registro";
 
-            mostrarMensajeGeneral(
-                "Solicitud eliminada correctamente.",
-                "success"
-            );
+        etiquetaCategoria.textContent =
+            categoria;
 
-            if (listaRegistros.querySelectorAll(".tarjeta-registro").length === 0) {
-                mostrarMensajeInicial();
+        const titulo =
+            document.createElement("h4");
+
+        titulo.className =
+            "card-title h5 text-primary";
+
+        titulo.textContent =
+            nombre;
+
+        const textoDescripcion =
+            document.createElement("p");
+
+        textoDescripcion.className =
+            "card-text";
+
+        textoDescripcion.textContent =
+            descripcion;
+
+        const botonEliminar =
+            document.createElement("button");
+
+        botonEliminar.type =
+            "button";
+
+        botonEliminar.className =
+            "btn btn-outline-danger btn-sm mt-auto";
+
+        botonEliminar.textContent =
+            "Eliminar solicitud";
+
+        botonEliminar.setAttribute(
+            "aria-label",
+            "Eliminar la solicitud " + nombre
+        );
+
+        // Evento dinámico para eliminar el registro
+        botonEliminar.addEventListener(
+            "click",
+            function () {
+
+                columna.remove();
+
+                actualizarTotal();
+
+                mostrarMensajeGeneral(
+                    "Solicitud eliminada correctamente.",
+                    "success"
+                );
+
+                const cantidadRegistros =
+                    listaRegistros.querySelectorAll(
+                        ".tarjeta-registro"
+                    ).length;
+
+                if (cantidadRegistros === 0) {
+                    mostrarMensajeInicial();
+                }
+
             }
-        });
+        );
 
-        cuerpoTarjeta.appendChild(etiquetaCategoria);
-        cuerpoTarjeta.appendChild(titulo);
-        cuerpoTarjeta.appendChild(textoDescripcion);
-        cuerpoTarjeta.appendChild(botonEliminar);
+        cuerpoTarjeta.appendChild(
+            etiquetaCategoria
+        );
 
-        tarjeta.appendChild(cuerpoTarjeta);
-        columna.appendChild(tarjeta);
+        cuerpoTarjeta.appendChild(
+            titulo
+        );
 
-        listaRegistros.appendChild(columna);
+        cuerpoTarjeta.appendChild(
+            textoDescripcion
+        );
+
+        cuerpoTarjeta.appendChild(
+            botonEliminar
+        );
+
+        tarjeta.appendChild(
+            cuerpoTarjeta
+        );
+
+        columna.appendChild(
+            tarjeta
+        );
+
+        listaRegistros.appendChild(
+            columna
+        );
 
         actualizarTotal();
     }
 
+    // Actualiza el contador de registros
     function actualizarTotal() {
-        const cantidadRegistros = listaRegistros.querySelectorAll(".tarjeta-registro").length;
-        totalRegistros.textContent = cantidadRegistros;
+
+        const cantidadRegistros =
+            listaRegistros.querySelectorAll(
+                ".tarjeta-registro"
+            ).length;
+
+        totalRegistros.textContent =
+            cantidadRegistros;
     }
 
+    // Muestra alertas Bootstrap de éxito o error
     function mostrarMensajeGeneral(texto, tipo) {
-        mensajeValidacion.textContent = texto;
-        mensajeValidacion.className = "alert alert-" + tipo + " mt-3";
+
+        mensajeValidacion.textContent =
+            texto;
+
+        mensajeValidacion.className =
+            "alert alert-" +
+            tipo +
+            " mt-3";
 
         setTimeout(function () {
-            mensajeValidacion.textContent = "";
-            mensajeValidacion.className = "mt-3";
+
+            mensajeValidacion.textContent =
+                "";
+
+            mensajeValidacion.className =
+                "mt-3";
+
         }, 3500);
     }
 
+    // Limpia los estados visuales después de registrar
     function limpiarValidaciones() {
-        nombreProducto.classList.remove("is-valid", "is-invalid");
-        descripcionProducto.classList.remove("is-valid", "is-invalid");
-        categoriaProducto.classList.remove("is-valid", "is-invalid");
 
-        mensajeNombre.textContent = "";
-        mensajeDescripcion.textContent = "";
-        mensajeCategoria.textContent = "";
+        nombreProducto.classList.remove(
+            "is-valid",
+            "is-invalid"
+        );
 
-        mensajeNombre.className = "campo-mensaje";
-        mensajeDescripcion.className = "campo-mensaje";
-        mensajeCategoria.className = "campo-mensaje";
+        descripcionProducto.classList.remove(
+            "is-valid",
+            "is-invalid"
+        );
+
+        categoriaProducto.classList.remove(
+            "is-valid",
+            "is-invalid"
+        );
+
+        mensajeNombre.textContent =
+            "";
+
+        mensajeDescripcion.textContent =
+            "";
+
+        mensajeCategoria.textContent =
+            "";
+
+        mensajeNombre.className =
+            "campo-mensaje";
+
+        mensajeDescripcion.className =
+            "campo-mensaje";
+
+        mensajeCategoria.className =
+            "campo-mensaje";
     }
 
+    // Recupera el mensaje cuando se eliminan todos los registros
     function mostrarMensajeInicial() {
-        const columnaMensaje = document.createElement("div");
-        columnaMensaje.className = "col-12";
-        columnaMensaje.id = "mensajeInicial";
 
-        const alerta = document.createElement("div");
-        alerta.className = "alert alert-info text-center";
-        alerta.textContent = "Aún no existen registros. Complete el formulario para agregar uno.";
+        const mensajeExistente =
+            document.getElementById("mensajeInicial");
 
-        columnaMensaje.appendChild(alerta);
-        listaRegistros.appendChild(columnaMensaje);
+        if (mensajeExistente) {
+            return;
+        }
+
+        const columnaMensaje =
+            document.createElement("div");
+
+        columnaMensaje.className =
+            "col-12";
+
+        columnaMensaje.id =
+            "mensajeInicial";
+
+        const alerta =
+            document.createElement("div");
+
+        alerta.className =
+            "alert alert-info text-center";
+
+        alerta.textContent =
+            "Aún no existen registros. Complete el formulario para agregar uno.";
+
+        columnaMensaje.appendChild(
+            alerta
+        );
+
+        listaRegistros.appendChild(
+            columnaMensaje
+        );
     }
+
+    // Contador inicial
+    actualizarTotal();
 
 });
