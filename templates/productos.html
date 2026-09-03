@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Productos | EmiTech Store{% endblock %}
+{% block content %}
+<section class="modulo">
+    <div class="container">
+        <nav aria-label="Ruta de navegación"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li><li class="breadcrumb-item active" aria-current="page">Productos</li></ol></nav>
+        <div class="cabecera-modulo">
+            <div><p class="etiqueta-modulo">EmiTech Store · Catálogo</p><h1>Productos</h1><p>Equipos, accesorios y componentes disponibles en nuestro catálogo.</p></div>
+            <span class="contador-registros">{{ productos|length }} productos</span>
+        </div>
+        <p class="aviso-demo">Catálogo de ejemplo: precios, existencias e imágenes ilustrativos.</p>
+        <div class="row g-4">
+            {% for producto in productos %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <article class="card tarjeta-producto h-100">
+                    <img class="card-img-top" src="{{ url_for('static', filename='img/' ~ producto.imagen) }}" alt="Imagen ilustrativa de la categoría {{ producto.categoria }}" loading="lazy">
+                    <div class="card-body">
+                        <p class="etiqueta-modulo">{{ producto.codigo }} · {{ producto.categoria }}</p>
+                        <h2 class="h4 text-primary">{{ producto.nombre }}</h2>
+                        <p class="card-text">{{ producto.descripcion }}</p>
+                        <div class="d-flex justify-content-between align-items-center gap-2"><strong class="precio-producto">${{ producto.precio }}</strong><span class="stock-producto">{{ producto.stock }} unidades</span></div>
+                        <a class="btn btn-outline-primary mt-3" href="{{ url_for('inicio', _anchor='registro') }}" aria-label="Ir al formulario para solicitar {{ producto.nombre }}">Solicitar información</a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

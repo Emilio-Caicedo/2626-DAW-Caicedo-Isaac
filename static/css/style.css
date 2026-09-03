@@ -122,7 +122,7 @@ section {
             rgba(13, 71, 161, 0.70),
             rgba(0, 0, 0, 0.55)
         ),
-        url("../imagenes/banner-principal.jpg");
+        url("../img/banner-principal.jpg");
 
     background-size: cover;
     background-position: center;
@@ -502,4 +502,47 @@ footer p {
         width: 100%;
         margin: 3px 0;
     }
+}
+/* Semana 9: módulos Flask; conserva la identidad azul y naranja. */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+.salto-contenido { position: absolute; top: 0; left: 0; z-index: 2000; background: white; padding: 12px; }
+.navbar-nav .nav-link.active { color: #0D47A1; text-decoration: underline; text-underline-offset: 7px; }
+.modulo { background: #f5f7fa; padding: 38px 0 60px; min-height: 64vh; }
+.cabecera-modulo { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 24px 0; }
+.cabecera-modulo h1 { color: #0D47A1; margin-bottom: 8px; }
+.cabecera-modulo p:last-child { margin-bottom: 0; }
+.etiqueta-modulo { font-size: .875rem; color: #52627a; font-weight: bold; margin-bottom: 8px; }
+.aviso-demo { padding: 12px 18px; background: #fff3dc; border-left: 4px solid #FF9800; border-radius: 8px; margin-bottom: 28px; }
+.precio-producto { font-size: 1.5rem; color: #0D47A1; }
+.stock-producto { background: #e9f4eb; color: #205b30; padding: 4px 10px; border-radius: 8px; font-size: .875rem; }
+.tabla-contenedor, .factura { background: white; border: 1px solid #dfe5ef; border-radius: 16px; overflow: hidden; }
+.modulo .table { min-width: 650px; }
+.modulo .table th, .modulo .table td { padding: 16px; }
+.modulo .table thead th { background: #0D47A1; color: white; }
+.datos-proveedor dd { margin-bottom: 16px; overflow-wrap: anywhere; }
+.datos-proveedor dd:last-child { margin-bottom: 0; }
+.factura { padding: 28px; }
+.monto { white-space: nowrap; }
+.totales-factura div { display: flex; justify-content: space-between; gap: 18px; padding: 10px 0; }
+.totales-factura dd { margin: 0; white-space: nowrap; }
+.total-final { border-top: 2px solid #0D47A1; color: #0D47A1; font-size: 1.3rem; font-weight: bold; }
+@media (max-width: 767px) {
+    .cabecera-modulo { align-items: flex-start; flex-direction: column; }
+    .factura { padding: 18px; }
+    .modulo { padding-top: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+/* Mostrar completas las imágenes promocionales del catálogo */
+.modulo .tarjeta-producto .card-img-top {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    object-position: center;
+    flex-shrink: 0;
 }

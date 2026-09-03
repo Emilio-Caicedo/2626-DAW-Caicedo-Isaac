@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Clientes | EmiTech Store{% endblock %}
+{% block content %}
+<section class="modulo">
+    <div class="container">
+        <nav aria-label="Ruta de navegación"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li><li class="breadcrumb-item active" aria-current="page">Clientes</li></ol></nav>
+        <div class="cabecera-modulo">
+            <div><p class="etiqueta-modulo">EmiTech Store · Directorio</p><h1>Clientes</h1><p>Información de contacto y tipo de cliente.</p></div>
+            <span class="contador-registros">{{ clientes|length }} clientes</span>
+        </div>
+        <p class="aviso-demo">Directorio de ejemplo. Los nombres y correos son de compañeros de la UEA.</p>
+        <div class="tabla-contenedor">
+            <div class="table-responsive" tabindex="0" role="region" aria-label="Directorio de clientes; desplazamiento horizontal en pantallas pequeñas">
+                <table class="table table-hover align-middle mb-0">
+                    <caption class="px-3">Clientes demostrativos de EmiTech Store.</caption>
+                    <thead><tr><th scope="col">Código</th><th scope="col">Cliente</th><th scope="col">Tipo</th><th scope="col">Correo electrónico</th><th scope="col">Ciudad</th></tr></thead>
+                    <tbody>
+                    {% for cliente in clientes %}
+                        <tr><th scope="row">{{ cliente.codigo }}</th><td>{{ cliente.nombre }}</td><td><span class="categoria-registro">{{ cliente.tipo }}</span></td><td>{{ cliente.correo }}</td><td>{{ cliente.ciudad }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a class="btn btn-azul mt-4" href="{{ url_for('facturacion') }}">Ver comprobante de ejemplo</a>
+    </div>
+</section>
+{% endblock %}

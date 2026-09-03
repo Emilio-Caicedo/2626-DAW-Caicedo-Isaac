@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Facturación | EmiTech Store{% endblock %}
+{% block content %}
+<section class="modulo">
+    <div class="container">
+        <nav aria-label="Ruta de navegación"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li><li class="breadcrumb-item active" aria-current="page">Facturación</li></ol></nav>
+        <div class="cabecera-modulo">
+            <div><p class="etiqueta-modulo">EmiTech Store · Ventas</p><h1>Facturación</h1><p>Detalle de una venta de ejemplo.</p></div>
+            <span class="contador-registros">{{ factura.numero }}</span>
+        </div>
+        <p class="aviso-demo">Comprobante demostrativo, sin validez tributaria. No se emite una factura ni se realiza un cobro.</p>
+        <article class="factura">
+            <div class="row g-4 mb-4">
+                <div class="col-md-6"><h2 class="h4 text-primary">EmiTech Store</h2><p class="mb-0">Tecnología que conecta contigo.</p><p class="mb-0">Moneda: dólares estadounidenses (USD).</p></div>
+                <div class="col-md-6"><h3 class="h5">Datos del comprobante</h3><p class="mb-1"><strong>Número:</strong> {{ factura.numero }}</p><p class="mb-0"><strong>Fecha de ejemplo:</strong> {{ factura.fecha }}</p></div>
+                <div class="col-12"><h3 class="h5">Cliente</h3><p class="mb-1">{{ factura.cliente }} · {{ factura.codigo_cliente }}</p><p class="mb-0">{{ factura.correo }}</p></div>
+            </div>
+            <div class="table-responsive" tabindex="0" role="region" aria-label="Detalle del comprobante; desplazamiento horizontal en pantallas pequeñas">
+                <table class="table align-middle">
+                    <caption>Productos incluidos en el comprobante.</caption>
+                    <thead><tr><th scope="col">Código</th><th scope="col">Producto</th><th scope="col" class="text-end">Cantidad</th><th scope="col" class="text-end">Precio unitario</th><th scope="col" class="text-end">Subtotal</th></tr></thead>
+                    <tbody>
+                    {% for item in detalle %}
+                        <tr><th scope="row">{{ item.codigo }}</th><td>{{ item.producto }}</td><td class="text-end">{{ item.cantidad }}</td><td class="text-end monto">${{ '%.2f'|format(item.precio) }}</td><td class="text-end monto">${{ '%.2f'|format(item.subtotal) }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row justify-content-end mt-3"><div class="col-md-7 col-lg-5">
+                <dl class="totales-factura">
+                    <div><dt>Subtotal</dt><dd>${{ '%.2f'|format(factura.subtotal) }}</dd></div>
+                    <div><dt>Impuesto de ejemplo (15 %)</dt><dd>${{ '%.2f'|format(factura.impuesto) }}</dd></div>
+                    <div class="total-final"><dt>Total</dt><dd>${{ '%.2f'|format(factura.total) }}</dd></div>
+                </dl>
+            </div></div>
+            <p class="text-secondary mb-0">El porcentaje se utiliza únicamente para ilustrar el cálculo.</p>
+        </article>
+        <a class="btn btn-azul mt-4" href="{{ url_for('productos') }}">Volver a productos</a>
+    </div>
+</section>
+{% endblock %}

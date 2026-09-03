@@ -1,0 +1,9 @@
+# El entorno virtual se crea en cada computadora; no se sube a GitHub.
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.env
+.DS_Store
+Thumbs.db
