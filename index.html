@@ -13,46 +13,46 @@
 </head>
 <body>
     <a class="visually-hidden-focusable salto-contenido" href="#contenido">Saltar al contenido</a>
-    <!-- Encabezado y navegación compartidos por las cinco páginas. -->
-    <header class="sticky-top">
-        <nav class="navbar navbar-expand-lg" data-bs-theme="light" aria-label="Navegación principal">
-            <div class="container">
-                <a class="navbar-brand" href="index.html" aria-label="EmiTech Store, inicio">
-                    <img src="static/img/logo-emitech.png" alt="Logo de EmiTech Store" class="img-fluid">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú de navegación">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="menuPrincipal">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-                        
-                        
-                        
-                        <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
-                        
-                        <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
-                        
-                        <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
-                        
-                        <li class="nav-item"><a class="nav-link" href="#registro">Registro</a></li>
-                        
-                        <li class="nav-item"><a class="nav-link" href="#video">Video</a></li>
-                        
-                        <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-                        
-                        
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-naranja" href="#contacto">Contáctanos</a>
-                        </li>
-                    </ul>
-                </div>
+
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg" data-bs-theme="light" aria-label="Navegación principal">
+        <div class="container">
+            <a class="navbar-brand" href="index.html" aria-label="EmiTech Store, inicio">
+                <img src="static/img/logo-emitech.png" alt="Logo de EmiTech Store" class="img-fluid">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú de navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+
+
+
+                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="#registro">Registro</a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="#video">Video</a></li>
+
+                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+
+
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-naranja" href="#contacto">Contáctanos</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
     <main id="contenido">
         <!-- Cada plantilla hija aporta aquí el contenido de su módulo. -->
-        
+
         <!-- Banner principal -->
         <section id="inicio" class="banner">
             <div class="container">
@@ -506,7 +506,7 @@
 
     </main>
 
-    
+
     <div class="modal fade"
         id="modalDetalleProducto"
         tabindex="-1"
@@ -555,14 +555,15 @@
     </div>
 
 
-    <footer>
-        <p><strong>Isaac Caicedo</strong></p>
-        <p>Desarrollo de Aplicaciones Web</p>
-        <p>Universidad Estatal Amazónica - 2026</p>
-    </footer>
+    <!-- Un único pie de página para todas las plantillas. -->
+<footer>
+    <p><strong>Isaac Caicedo</strong></p>
+    <p>Desarrollo de Aplicaciones Web</p>
+    <p>Universidad Estatal Amazónica - 2026</p>
+</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
 <!-- JSON seguro: las rutas se generan con url_for en Python. -->
 <script type="application/json" id="datosCatalogo">[{"descripcion": "Equipos ideales para estudiar, trabajar, emprender y desarrollar diferentes actividades profesionales.", "imagen": "static/img/laptops-computadoras.jpg", "nombre": "Laptops y computadoras"}, {"descripcion": "Teclados, mouse, aud\u00edfonos y diferentes accesorios para mejorar la experiencia de uso de tus equipos.", "imagen": "static/img/accesorios-tecnologicos.jpg", "nombre": "Accesorios tecnol\u00f3gicos"}, {"descripcion": "Memorias RAM, discos SSD, tarjetas gr\u00e1ficas y componentes para actualizar o mejorar una computadora.", "imagen": "static/img/componentes-informaticos.jpg", "nombre": "Componentes inform\u00e1ticos"}]</script>
 

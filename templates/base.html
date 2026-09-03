@@ -12,38 +12,7 @@
 </head>
 <body>
     <a class="visually-hidden-focusable salto-contenido" href="#contenido">Saltar al contenido</a>
-    <!-- Encabezado y navegación compartidos por las cinco páginas. -->
-    <header class="sticky-top">
-        <nav class="navbar navbar-expand-lg" data-bs-theme="light" aria-label="Navegación principal">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url_for('inicio') }}" aria-label="EmiTech Store, inicio">
-                    <img src="{{ url_for('static', filename='img/logo-emitech.png') }}" alt="Logo de EmiTech Store" class="img-fluid">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú de navegación">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="menuPrincipal">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-                        {% if modo_estatico|default(false) %}
-                        {# GitHub Pages muestra únicamente la página informativa. #}
-                        {% for ancla, etiqueta in [('inicio', 'Inicio'), ('quienes', 'Quiénes Somos'), ('productos', 'Productos'), ('registro', 'Registro'), ('video', 'Video'), ('contacto', 'Contacto')] %}
-                        <li class="nav-item"><a class="nav-link" href="#{{ ancla }}">{{ etiqueta }}</a></li>
-                        {% endfor %}
-                        {% else %}
-                        {% for endpoint, etiqueta in [('inicio', 'Inicio'), ('productos', 'Productos'), ('clientes', 'Clientes'), ('proveedores', 'Proveedores'), ('facturacion', 'Facturación')] %}
-                        <li class="nav-item">
-                            <a class="nav-link{% if request.endpoint == endpoint %} active{% endif %}" href="{{ url_for(endpoint) }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>{{ etiqueta }}</a>
-                        </li>
-                        {% endfor %}
-                        {% endif %}
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-naranja" href="{{ url_for('inicio', _anchor='contacto') }}">Contáctanos</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    {% include "components/navbar.html" %}
 
     <main id="contenido">
         <!-- Cada plantilla hija aporta aquí el contenido de su módulo. -->
@@ -52,11 +21,7 @@
 
     {% block modals %}{% endblock %}
 
-    <footer>
-        <p><strong>Isaac Caicedo</strong></p>
-        <p>Desarrollo de Aplicaciones Web</p>
-        <p>Universidad Estatal Amazónica - 2026</p>
-    </footer>
+    {% include "components/footer.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block page_data %}{% endblock %}

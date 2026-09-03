@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Productos | EmiTech Store{% endblock %}
+{% block title %}{{ titulo }} | EmiTech Store{% endblock %}
 {% block content %}
 <section class="modulo">
     <div class="container">
         <nav aria-label="Ruta de navegación"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li><li class="breadcrumb-item active" aria-current="page">Productos</li></ol></nav>
         <div class="cabecera-modulo">
-            <div><p class="etiqueta-modulo">EmiTech Store · Catálogo</p><h1>Productos</h1><p>Equipos, accesorios y componentes disponibles en nuestro catálogo.</p></div>
+            <div><p class="etiqueta-modulo">EmiTech Store · Catálogo</p><h1>{{ titulo }}</h1><p>Equipos, accesorios y componentes de nuestro catálogo.</p></div>
             <span class="contador-registros">{{ productos|length }} productos</span>
         </div>
-        <p class="aviso-demo">Catálogo de ejemplo: precios, existencias e imágenes ilustrativos.</p>
+        {% include "components/aviso.html" %}
+        {% if productos %}
         <div class="row g-4">
             {% for producto in productos %}
             <div class="col-12 col-md-6 col-xl-4">
@@ -18,13 +19,30 @@
                         <p class="etiqueta-modulo">{{ producto.codigo }} · {{ producto.categoria }}</p>
                         <h2 class="h4 text-primary">{{ producto.nombre }}</h2>
                         <p class="card-text">{{ producto.descripcion }}</p>
-                        <div class="d-flex justify-content-between align-items-center gap-2"><strong class="precio-producto">${{ producto.precio }}</strong><span class="stock-producto">{{ producto.stock }} unidades</span></div>
-                        <a class="btn btn-outline-primary mt-3" href="{{ url_for('inicio', _anchor='registro') }}" aria-label="Ir al formulario para solicitar {{ producto.nombre }}">Solicitar información</a>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <strong class="precio-producto">${{ producto.precio }}</strong>
+                            <div class="text-end">
+                                {# Condicional basado en los datos enviados desde app.py. #}
+                                {% if producto.stock > 0 %}
+                                <span class="badge bg-success">Disponible</span>
+                                <small class="d-block text-secondary">{{ producto.stock }} unidades</small>
+                                {% else %}
+                                <span class="badge bg-danger">Agotado</span>
+                                <small class="d-block text-secondary">Sin existencias</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a class="btn btn-outline-primary mt-3" href="{{ url_for('inicio', _anchor='registro') }}" aria-label="Solicitar información sobre {{ producto.nombre }}">
+                            {% if producto.stock > 0 %}Solicitar información{% else %}Consultar reposición{% endif %}
+                        </a>
                     </div>
                 </article>
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <p class="alert alert-info" role="status">No hay productos registrados por el momento.</p>
+        {% endif %}
     </div>
 </section>
 {% endblock %}
