@@ -1,0 +1,13 @@
+{# Mensajes reutilizables mostrados después de un POST válido. #}
+{% with mensajes = get_flashed_messages(with_categories=true) %}
+    {% if mensajes %}
+    <div class="container mensajes-flash" aria-live="polite">
+        {% for categoria, mensaje in mensajes %}
+        <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="status">
+            {{ mensaje }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar mensaje"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}

@@ -9,6 +9,9 @@
             <span class="contador-registros">{{ clientes|length }} clientes</span>
         </div>
         {% include "components/aviso.html" %}
+        <div class="acciones-modulo">
+            <a class="btn btn-naranja" href="{{ url_for('nuevo_cliente') }}">Registrar cliente</a>
+        </div>
         {% if clientes %}
         <div class="tabla-contenedor">
             <div class="table-responsive" tabindex="0" role="region" aria-label="Directorio de clientes; desplazamiento horizontal en pantallas pequeñas">

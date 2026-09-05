@@ -546,3 +546,73 @@ main { flex: 1; }
     object-position: center;
     flex-shrink: 0;
 }
+
+/* Semana 11: formularios Flask-WTF y validación del servidor */
+.mensajes-flash {
+    padding-top: 20px;
+}
+
+.acciones-modulo {
+    display: flex;
+    justify-content: flex-end;
+    margin: -8px 0 28px;
+}
+
+.tarjeta-formulario {
+    width: min(100%, 880px);
+    margin: 0 auto;
+    padding: 32px;
+    background-color: #ffffff;
+    border: 1px solid #dfe5ef;
+    border-top: 6px solid #0D47A1;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(13, 71, 161, 0.10);
+}
+
+.tarjeta-formulario .form-label {
+    color: #243a5a;
+}
+
+.tarjeta-formulario .form-control,
+.tarjeta-formulario .form-select {
+    min-height: 48px;
+}
+
+.tarjeta-formulario textarea.form-control {
+    min-height: 110px;
+}
+
+.tarjeta-formulario .invalid-feedback {
+    font-weight: 600;
+}
+
+.acciones-formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 12px;
+}
+
+.aviso-formulario {
+    margin: 8px 0 4px;
+    padding: 12px 16px;
+    color: #654300;
+    background-color: #fff3dc;
+    border-left: 4px solid #FF9800;
+    border-radius: 8px;
+}
+
+@media (max-width: 576px) {
+    .tarjeta-formulario {
+        padding: 20px;
+    }
+
+    .acciones-modulo {
+        justify-content: stretch;
+    }
+
+    .acciones-modulo .btn,
+    .acciones-formulario .btn {
+        width: 100%;
+    }
+}

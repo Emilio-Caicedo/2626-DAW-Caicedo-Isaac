@@ -9,6 +9,9 @@
             <span class="contador-registros">{{ factura.numero }}</span>
         </div>
         {% include "components/aviso.html" %}
+        <div class="acciones-modulo">
+            <a class="btn btn-naranja" href="{{ url_for('nueva_factura') }}">Generar comprobante</a>
+        </div>
         <article class="factura">
             <div class="row g-4 mb-4">
                 <div class="col-md-6"><h2 class="h4 text-primary">EmiTech Store</h2><p class="mb-0">Tecnología que conecta contigo.</p><p class="mb-0">Moneda: dólares estadounidenses (USD).</p></div>

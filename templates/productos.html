@@ -9,6 +9,9 @@
             <span class="contador-registros">{{ productos|length }} productos</span>
         </div>
         {% include "components/aviso.html" %}
+        <div class="acciones-modulo">
+            <a class="btn btn-naranja" href="{{ url_for('nuevo_producto') }}">Registrar producto</a>
+        </div>
         {% if productos %}
         <div class="row g-4">
             {% for producto in productos %}

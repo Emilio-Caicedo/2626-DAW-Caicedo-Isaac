@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "components/campos_formulario.html" import campo %}
+{% block title %}{{ titulo }} | EmiTech Store{% endblock %}
+{% block content %}
+<section class="modulo modulo-formulario">
+    <div class="container">
+        <nav aria-label="Ruta de navegación">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('facturacion') }}">Facturación</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+            </ol>
+        </nav>
+        <div class="cabecera-modulo">
+            <div><p class="etiqueta-modulo">EmiTech Store · Formulario</p><h1>{{ titulo }}</h1><p>Seleccione un cliente y un producto disponible para crear el comprobante.</p></div>
+            <span class="contador-registros">Flask-WTF</span>
+        </div>
+        <div class="tarjeta-formulario">
+            <form method="POST" action="{{ url_for('nueva_factura') }}" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="row g-3">
+                    <div class="col-md-6">{{ campo(form.numero, ayuda="Formato requerido: FAC-0000") }}</div>
+                    <div class="col-md-6">{{ campo(form.fecha) }}</div>
+                    <div class="col-12">{{ campo(form.cliente_codigo, "form-select") }}</div>
+                    <div class="col-md-8">{{ campo(form.producto_codigo, "form-select", "Solo aparecen productos con existencias.") }}</div>
+                    <div class="col-md-4">{{ campo(form.cantidad) }}</div>
+                </div>
+                <p class="aviso-formulario">El precio se obtiene del catálogo y el impuesto del 15 % se usa únicamente con fines académicos.</p>
+                <div class="acciones-formulario">
+                    {{ form.submit(class="btn btn-naranja") }}
+                    <a class="btn btn-outline-secondary" href="{{ url_for('facturacion') }}">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
