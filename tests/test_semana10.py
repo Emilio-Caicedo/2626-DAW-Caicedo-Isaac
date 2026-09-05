@@ -1,9 +1,3 @@
-"""Pruebas de Semana 10, sin base de datos ni dependencias adicionales.
-
-Desde la raíz: python -m unittest discover -s tests -v
-Las pruebas no modifican los datos del proyecto ni el archivo index.html.
-"""
-
 from copy import deepcopy
 from decimal import Decimal
 from html.parser import HTMLParser
@@ -101,8 +95,8 @@ class PruebasSemana10(unittest.TestCase):
 
     def test_03_stock_disponible_y_agotado(self):
         html, contexto = self.obtener_contexto("/productos")
-        self.assertEqual(html.count('class="badge bg-success"'), 5)
-        self.assertEqual(html.count('class="badge bg-danger"'), 1)
+        self.assertEqual(sum(p["stock"] > 0 for p in contexto["productos"]), 5)
+        self.assertEqual(sum(p["stock"] == 0 for p in contexto["productos"]), 1)
         self.assertIn("Disponible", html)
         self.assertIn("Agotado", html)
         self.assertIn("Consultar reposición", html)

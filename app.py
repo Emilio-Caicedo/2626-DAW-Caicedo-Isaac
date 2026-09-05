@@ -1,13 +1,8 @@
-"""EmiTech Store — Proyecto Integrador, Semana 11.
-
-Aplicación Flask con contenido dinámico y formularios Flask-WTF. Los datos se
-conservan temporalmente en listas y diccionarios mientras el servidor está
-encendido; todavía no existe conexión a una base de datos.
-"""
-
 import os
+import sqlite3
 from datetime import date
 from decimal import Decimal
+from pathlib import Path
 
 from flask import Flask, flash, redirect, render_template, url_for
 from flask_wtf.csrf import CSRFProtect
@@ -19,16 +14,15 @@ app = Flask(__name__)
 # Flask-WTF utiliza esta clave para firmar el token CSRF. En producción debe
 # definirse la variable de entorno SECRET_KEY con un valor privado.
 app.config["SECRET_KEY"] = os.environ.get(
-    "SECRET_KEY", "emitech-clave-academica-semana-11"
+    "SECRET_KEY", "emitech-clave-academica-semana-12"
 )
+app.config["DATABASE"] = Path(__file__).resolve().parent / "data" / "emitech_store.db"
 csrf = CSRFProtect(app)
 
 NOMBRE_TIENDA = "EmiTech Store"
 TASA_IMPUESTO_DEMO = Decimal("0.15")
 
-
-# Listas de diccionarios en memoria. Se reinician al detener Flask.
-PRODUCTOS = [
+PRODUCTOS_INICIALES = [
     {"codigo": "PRO-001", "nombre": "Laptop para estudio", "categoria": "Laptops y computadoras", "descripcion": "Pantalla de 15,6 pulgadas, 8 GB de RAM y SSD de 512 GB.", "precio": "550.00", "stock": 8, "imagen": "laptop-estudio.jpg"},
     {"codigo": "PRO-002", "nombre": "Computadora de escritorio", "categoria": "Laptops y computadoras", "descripcion": "Equipo para oficina con 16 GB de RAM y SSD de 512 GB.", "precio": "680.00", "stock": 5, "imagen": "computadora-escritorio.jpg"},
     {"codigo": "PRO-003", "nombre": "Teclado y mouse", "categoria": "Accesorios tecnológicos", "descripcion": "Kit USB para las actividades diarias de estudio y trabajo.", "precio": "25.00", "stock": 20, "imagen": "teclado-mouse.jpg"},
@@ -36,6 +30,126 @@ PRODUCTOS = [
     {"codigo": "PRO-005", "nombre": "Memoria RAM de 8 GB", "categoria": "Componentes informáticos", "descripcion": "Módulo DDR4 para equipos compatibles.", "precio": "28.00", "stock": 15, "imagen": "memoria-ram.jpg"},
     {"codigo": "PRO-006", "nombre": "Disco SSD de 480 GB", "categoria": "Componentes informáticos", "descripcion": "Unidad SATA para mejorar el almacenamiento del equipo.", "precio": "45.00", "stock": 0, "imagen": "disco-ssd.jpg"},
 ]
+
+
+def conectar_bd():
+    """Abre una conexión a la base local y permite leer columnas por nombre."""
+    ruta_bd = Path(app.config["DATABASE"])
+    ruta_bd.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(ruta_bd)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def inicializar_base_datos():
+    """Crea la tabla Productos y carga el catálogo original si está vacía."""
+    conn = conectar_bd()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS productos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                codigo TEXT NOT NULL UNIQUE,
+                nombre TEXT NOT NULL,
+                categoria TEXT NOT NULL,
+                descripcion TEXT NOT NULL,
+                precio REAL NOT NULL CHECK (precio > 0),
+                stock INTEGER NOT NULL CHECK (stock >= 0),
+                imagen TEXT NOT NULL
+            )
+            """
+        )
+        cursor.execute("SELECT COUNT(*) FROM productos")
+        if cursor.fetchone()[0] == 0:
+            cursor.executemany(
+                """
+                INSERT INTO productos
+                    (codigo, nombre, categoria, descripcion, precio, stock, imagen)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                [
+                    (
+                        producto["codigo"],
+                        producto["nombre"],
+                        producto["categoria"],
+                        producto["descripcion"],
+                        producto["precio"],
+                        producto["stock"],
+                        producto["imagen"],
+                    )
+                    for producto in PRODUCTOS_INICIALES
+                ],
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def obtener_productos():
+    """Recupera con SELECT y fetchall todos los productos persistentes."""
+    conn = conectar_bd()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT id, codigo, nombre, categoria, descripcion, precio, stock, imagen
+            FROM productos
+            ORDER BY id
+            """
+        )
+        filas = cursor.fetchall()
+        return [dict(fila) for fila in filas]
+    finally:
+        conn.close()
+
+
+def buscar_producto_por_codigo(codigo):
+    """Consulta un producto con un parámetro SQL seguro."""
+    conn = conectar_bd()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT id, codigo, nombre, categoria, descripcion, precio, stock, imagen
+            FROM productos
+            WHERE codigo = ?
+            """,
+            (codigo.strip().upper(),),
+        )
+        fila = cursor.fetchone()
+        return dict(fila) if fila else None
+    finally:
+        conn.close()
+
+
+def insertar_producto(producto):
+    """Inserta un producto validado, confirma el cambio y cierra la conexión."""
+    conn = conectar_bd()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO productos
+                (codigo, nombre, categoria, descripcion, precio, stock, imagen)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                producto["codigo"],
+                producto["nombre"],
+                producto["categoria"],
+                producto["descripcion"],
+                producto["precio"],
+                producto["stock"],
+                producto["imagen"],
+            ),
+        )
+        conn.commit()
+    except sqlite3.IntegrityError:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
 
 CLIENTES = [
     {"codigo": "CLI-001", "nombre": "CARLOS SEGUNDO ARCE BATALLAS", "tipo": "Estudiante", "correo": "cs.arceb@uea.edu.ec", "ciudad": "Puyo"},
@@ -107,6 +221,9 @@ def completar_totales_factura():
     )
 
 
+inicializar_base_datos()
+
+
 @app.route("/")
 def inicio():
     """Página informativa conservada de las semanas anteriores."""
@@ -117,41 +234,43 @@ def inicio():
 
 @app.route("/productos")
 def productos():
-    """Catálogo dinámico del módulo Productos."""
+    """Consulta con SELECT el catálogo persistente del módulo Productos."""
     return render_template(
         "productos.html",
         titulo="Productos",
-        productos=PRODUCTOS,
-        aviso="Los registros se mantienen temporalmente mientras Flask está ejecutándose.",
+        productos=obtener_productos(),
+        aviso="Productos recuperados desde la base de datos local emitech_store.db.",
     )
 
 
 @app.route("/productos/nuevo", methods=["GET", "POST"])
 def nuevo_producto():
-    """Presenta y procesa el formulario validado de productos."""
+    """Valida el formulario y realiza un INSERT parametrizado en SQLite."""
     form = ProductoForm()
     if form.validate_on_submit():
         codigo = form.codigo.data.strip().upper()
-        if buscar_por_codigo(PRODUCTOS, codigo):
+        imagenes = {
+            "Laptops y computadoras": "laptops-computadoras.jpg",
+            "Accesorios tecnológicos": "accesorios-tecnologicos.jpg",
+            "Componentes informáticos": "componentes-informaticos.jpg",
+        }
+        producto = {
+            "codigo": codigo,
+            "nombre": form.nombre.data.strip(),
+            "categoria": form.categoria.data,
+            "descripcion": form.descripcion.data.strip(),
+            "precio": float(form.precio.data),
+            "stock": form.stock.data,
+            "imagen": imagenes[form.categoria.data],
+        }
+        try:
+            insertar_producto(producto)
+        except sqlite3.IntegrityError:
             form.codigo.errors.append("Ya existe un producto con este código.")
         else:
-            imagenes = {
-                "Laptops y computadoras": "laptops-computadoras.jpg",
-                "Accesorios tecnológicos": "accesorios-tecnologicos.jpg",
-                "Componentes informáticos": "componentes-informaticos.jpg",
-            }
-            PRODUCTOS.append(
-                {
-                    "codigo": codigo,
-                    "nombre": form.nombre.data.strip(),
-                    "categoria": form.categoria.data,
-                    "descripcion": form.descripcion.data.strip(),
-                    "precio": f"{form.precio.data:.2f}",
-                    "stock": form.stock.data,
-                    "imagen": imagenes[form.categoria.data],
-                }
+            flash(
+                "Producto guardado correctamente en emitech_store.db.", "success"
             )
-            flash("Producto registrado correctamente.", "success")
             return redirect(url_for("productos"))
     return render_template(
         "formulario_producto.html", titulo="Registrar producto", form=form
@@ -249,19 +368,21 @@ def facturacion():
 def nueva_factura():
     """Presenta y procesa un comprobante de un producto."""
     form = FacturacionForm()
+    productos_disponibles = [
+        producto for producto in obtener_productos() if producto["stock"] > 0
+    ]
     form.cliente_codigo.choices = [
         (cliente["codigo"], f'{cliente["codigo"]} · {cliente["nombre"]}')
         for cliente in CLIENTES
     ]
     form.producto_codigo.choices = [
         (producto["codigo"], f'{producto["codigo"]} · {producto["nombre"]}')
-        for producto in PRODUCTOS
-        if producto["stock"] > 0
+        for producto in productos_disponibles
     ]
 
     if form.validate_on_submit():
         cliente = buscar_por_codigo(CLIENTES, form.cliente_codigo.data)
-        producto = buscar_por_codigo(PRODUCTOS, form.producto_codigo.data)
+        producto = buscar_producto_por_codigo(form.producto_codigo.data)
         codigo_factura = form.numero.data.strip().upper()
 
         if codigo_factura == FACTURA["numero"]:
@@ -273,7 +394,7 @@ def nueva_factura():
                 f'La cantidad supera el stock disponible ({producto["stock"]}).'
             )
         else:
-            precio = Decimal(producto["precio"])
+            precio = Decimal(str(producto["precio"]))
             DETALLE_FACTURA.clear()
             DETALLE_FACTURA.append(
                 {

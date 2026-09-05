@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Las imágenes llegan con rutas url_for desde Flask o con rutas relativas
-    // al exportar el frontend. Un archivo .js no interpreta etiquetas Jinja2.
+   
     const datosCatalogo = document.getElementById("datosCatalogo");
     const productos = datosCatalogo ? JSON.parse(datosCatalogo.textContent) : [];
-    // El contacto sigue siendo demostrativo: no existe envío al servidor.
+    
     const formularioContacto = document.querySelector(".formulario-contacto");
     if (formularioContacto) {
         formularioContacto.addEventListener("submit", function (evento) {
@@ -110,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // Elementos relacionados con el formulario de solicitudes
     const formulario = document.getElementById("formRegistro");
-    // Los módulos internos comparten este script, pero no tienen este formulario.
+    
     if (!formulario) {
         return;
     }
@@ -512,6 +511,5 @@ document.addEventListener("DOMContentLoaded", function () {
             columnaMensaje
         );
     }
-    // Contador inicial
     actualizarTotal();
 });

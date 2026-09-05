@@ -1,11 +1,3 @@
-"""Genera el index.html estático que sirve GitHub Pages.
-
-Ejecutar: python generar_frontend.py
-Las páginas de Flask se editan en templates/. Este script reutiliza la
-plantilla de inicio y convierte las rutas a archivos relativos, compatibles
-con el subdirectorio /2626-DAW-Caicedo-Isaac/ de GitHub Pages.
-"""
-
 from pathlib import Path
 from urllib.parse import quote
 

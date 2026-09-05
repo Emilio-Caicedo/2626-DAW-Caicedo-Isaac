@@ -1,10 +1,9 @@
-"""Pruebas de formularios, validación, CSRF y conservación de rutas."""
-
 import re
 import unittest
 from copy import deepcopy
 from decimal import Decimal
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from flask_wtf import FlaskForm
 
@@ -12,14 +11,16 @@ from app import (
     CLIENTES,
     DETALLE_FACTURA,
     FACTURA,
-    PRODUCTOS,
+    PRODUCTOS_INICIALES,
     PROVEEDORES,
     app,
+    buscar_producto_por_codigo,
+    inicializar_base_datos,
+    obtener_productos,
 )
 from forms import ClienteForm, FacturacionForm, ProductoForm, ProveedorForm
 
 RAIZ = Path(__file__).resolve().parents[1]
-PRODUCTOS_INICIALES = deepcopy(PRODUCTOS)
 CLIENTES_INICIALES = deepcopy(CLIENTES)
 PROVEEDORES_INICIALES = deepcopy(PROVEEDORES)
 DETALLE_INICIAL = deepcopy(DETALLE_FACTURA)
@@ -27,12 +28,14 @@ FACTURA_INICIAL = deepcopy(FACTURA)
 
 
 class Semana11Test(unittest.TestCase):
-    """Comprueba los requisitos expresos del Avance 11/16."""
 
     @classmethod
     def setUpClass(cls):
         cls.config_testing = app.config["TESTING"]
         cls.config_csrf = app.config.get("WTF_CSRF_ENABLED", True)
+        cls.database_original = app.config["DATABASE"]
+        cls.directorio_temporal = TemporaryDirectory()
+        app.config["DATABASE"] = Path(cls.directorio_temporal.name) / "semana11.db"
         app.config.update(TESTING=True, WTF_CSRF_ENABLED=False)
 
     @classmethod
@@ -40,9 +43,14 @@ class Semana11Test(unittest.TestCase):
         app.config.update(
             TESTING=cls.config_testing, WTF_CSRF_ENABLED=cls.config_csrf
         )
+        app.config["DATABASE"] = cls.database_original
+        cls.directorio_temporal.cleanup()
 
     def setUp(self):
-        PRODUCTOS[:] = deepcopy(PRODUCTOS_INICIALES)
+        ruta_bd = Path(app.config["DATABASE"])
+        if ruta_bd.exists():
+            ruta_bd.unlink()
+        inicializar_base_datos()
         CLIENTES[:] = deepcopy(CLIENTES_INICIALES)
         PROVEEDORES[:] = deepcopy(PROVEEDORES_INICIALES)
         DETALLE_FACTURA[:] = deepcopy(DETALLE_INICIAL)
@@ -76,7 +84,7 @@ class Semana11Test(unittest.TestCase):
 
     def test_03_csrf_impide_procesar_post_sin_token(self):
         app.config["WTF_CSRF_ENABLED"] = True
-        cantidad = len(PRODUCTOS)
+        cantidad = len(obtener_productos())
         respuesta = self.cliente.post(
             "/productos/nuevo",
             data={
@@ -89,7 +97,7 @@ class Semana11Test(unittest.TestCase):
             },
         )
         self.assertEqual(respuesta.status_code, 400)
-        self.assertEqual(len(PRODUCTOS), cantidad)
+        self.assertEqual(len(obtener_productos()), cantidad)
         app.config["WTF_CSRF_ENABLED"] = False
 
     def test_04_campos_vacios_muestran_errores(self):
@@ -150,10 +158,12 @@ class Semana11Test(unittest.TestCase):
         )
         html = respuesta.get_data(as_text=True)
         self.assertEqual(respuesta.status_code, 200)
-        self.assertEqual(len(PRODUCTOS), len(PRODUCTOS_INICIALES) + 1)
-        self.assertIn("Producto registrado correctamente.", html)
+        self.assertEqual(len(obtener_productos()), len(PRODUCTOS_INICIALES) + 1)
+        self.assertIn("Producto guardado correctamente", html)
         self.assertIn("Monitor de 24 pulgadas", html)
-        self.assertEqual(PRODUCTOS[-1]["precio"], "189.90")
+        self.assertAlmostEqual(
+            buscar_producto_por_codigo("PRO-007")["precio"], 189.90
+        )
 
     def test_07_registro_valido_de_cliente(self):
         respuesta = self.cliente.post(
@@ -191,7 +201,7 @@ class Semana11Test(unittest.TestCase):
         self.assertIn("4 días", html)
 
     def test_09_codigos_duplicados_no_se_procesan(self):
-        cantidad = len(PRODUCTOS)
+        cantidad = len(obtener_productos())
         respuesta = self.cliente.post(
             "/productos/nuevo",
             data={
@@ -203,7 +213,7 @@ class Semana11Test(unittest.TestCase):
                 "stock": "1",
             },
         )
-        self.assertEqual(len(PRODUCTOS), cantidad)
+        self.assertEqual(len(obtener_productos()), cantidad)
         self.assertIn(
             "Ya existe un producto con este código.",
             respuesta.get_data(as_text=True),

@@ -13,6 +13,40 @@
             <a class="btn btn-naranja" href="{{ url_for('nuevo_producto') }}">Registrar producto</a>
         </div>
         {% if productos %}
+        <section class="seccion-tabla-productos" aria-labelledby="tituloTablaProductos">
+            <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+                <div>
+                    <p class="etiqueta-modulo mb-1">Persistencia local SQLite</p>
+                    <h2 class="h4 text-primary mb-0" id="tituloTablaProductos">Productos almacenados</h2>
+                </div>
+                <small class="text-secondary">Origen: data/emitech_store.db</small>
+            </div>
+            <div class="tabla-contenedor">
+                <div class="table-responsive" tabindex="0" role="region" aria-label="Productos almacenados; desplazamiento horizontal en pantallas pequeñas">
+                    <table class="table table-hover align-middle mb-0 tabla-productos-sqlite">
+                        <caption class="px-3">Registros recuperados mediante SELECT y fetchall().</caption>
+                        <thead>
+                            <tr><th scope="col">ID</th><th scope="col">Código</th><th scope="col">Producto</th><th scope="col">Categoría</th><th scope="col" class="text-end">Precio</th><th scope="col" class="text-end">Stock</th><th scope="col">Estado</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr data-product-id="{{ producto.id }}">
+                                <td>{{ producto.id }}</td>
+                                <th scope="row">{{ producto.codigo }}</th>
+                                <td>{{ producto.nombre }}</td>
+                                <td>{{ producto.categoria }}</td>
+                                <td class="text-end monto">${{ '%.2f'|format(producto.precio) }}</td>
+                                <td class="text-end">{{ producto.stock }}</td>
+                                <td>{% if producto.stock > 0 %}<span class="badge bg-success">Disponible</span>{% else %}<span class="badge bg-danger">Agotado</span>{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <h2 class="h4 text-primary mb-3">Catálogo visual</h2>
         <div class="row g-4">
             {% for producto in productos %}
             <div class="col-12 col-md-6 col-xl-4">
@@ -23,7 +57,7 @@
                         <h2 class="h4 text-primary">{{ producto.nombre }}</h2>
                         <p class="card-text">{{ producto.descripcion }}</p>
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <strong class="precio-producto">${{ producto.precio }}</strong>
+                            <strong class="precio-producto">${{ '%.2f'|format(producto.precio) }}</strong>
                             <div class="text-end">
                                 {# Condicional basado en los datos enviados desde app.py. #}
                                 {% if producto.stock > 0 %}

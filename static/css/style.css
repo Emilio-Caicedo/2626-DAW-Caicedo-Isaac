@@ -503,7 +503,7 @@ footer p {
         margin: 3px 0;
     }
 }
-/* Semana 9: módulos Flask; conserva la identidad azul y naranja. */
+
 body { min-height: 100vh; display: flex; flex-direction: column; }
 main { flex: 1; }
 .salto-contenido { position: absolute; top: 0; left: 0; z-index: 2000; background: white; padding: 12px; }
@@ -536,7 +536,7 @@ main { flex: 1; }
     html { scroll-behavior: auto; }
     *, *::before, *::after { animation: none !important; transition: none !important; }
 }
-/* Mostrar completas las imágenes promocionales del catálogo */
+
 .modulo .tarjeta-producto .card-img-top {
     display: block;
     width: 100%;
@@ -547,7 +547,6 @@ main { flex: 1; }
     flex-shrink: 0;
 }
 
-/* Semana 11: formularios Flask-WTF y validación del servidor */
 .mensajes-flash {
     padding-top: 20px;
 }
@@ -615,4 +614,18 @@ main { flex: 1; }
     .acciones-formulario .btn {
         width: 100%;
     }
+}
+
+.seccion-tabla-productos {
+    padding: 0;
+    margin: 0 0 38px;
+}
+
+.tabla-productos-sqlite th,
+.tabla-productos-sqlite td {
+    vertical-align: middle;
+}
+
+.tabla-productos-sqlite tbody tr:hover {
+    background-color: rgba(13, 71, 161, 0.04);
 }
