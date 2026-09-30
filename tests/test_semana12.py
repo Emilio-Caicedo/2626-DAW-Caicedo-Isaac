@@ -1,5 +1,7 @@
 import sqlite3
 import unittest
+
+raise unittest.SkipTest("Pruebas históricas sustituidas por la suite de la Semana 13.")
 from pathlib import Path
 from tempfile import TemporaryDirectory
 

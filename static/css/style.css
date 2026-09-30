@@ -622,10 +622,38 @@ main { flex: 1; }
 }
 
 .tabla-productos-sqlite th,
-.tabla-productos-sqlite td {
+.tabla-productos-sqlite td,
+.tabla-productos-mysql th,
+.tabla-productos-mysql td {
     vertical-align: middle;
 }
 
-.tabla-productos-sqlite tbody tr:hover {
+.tabla-productos-sqlite tbody tr:hover,
+.tabla-productos-mysql tbody tr:hover {
     background-color: rgba(13, 71, 161, 0.04);
+}
+
+.tabla-productos-mysql {
+    min-width: 1040px !important;
+}
+
+.acciones-crud {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.acciones-crud form {
+    margin: 0;
+}
+
+@media (max-width: 576px) {
+    .acciones-crud {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .acciones-crud .btn {
+        width: 100%;
+    }
 }

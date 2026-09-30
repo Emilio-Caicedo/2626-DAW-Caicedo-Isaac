@@ -8,26 +8,33 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url_for('inicio') }}">Inicio</a></li>
                 <li class="breadcrumb-item"><a href="{{ url_for('productos') }}">Productos</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+                <li class="breadcrumb-item active" aria-current="page">{% if modo_edicion %}Modificar{% else %}Nuevo{% endif %}</li>
             </ol>
         </nav>
+
         <div class="cabecera-modulo">
-            <div><p class="etiqueta-modulo">EmiTech Store · Formulario</p><h1>{{ titulo }}</h1><p>Complete los campos para incorporar un producto temporal al catálogo.</p></div>
-            <span class="contador-registros">Flask-WTF</span>
+            <div>
+                <p class="etiqueta-modulo">EmiTech Store · Formulario MySQL</p>
+                <h1>{{ titulo }}</h1>
+                <p>{{ subtitulo }}</p>
+            </div>
+            <span class="contador-registros">{% if modo_edicion %}UPDATE{% else %}INSERT{% endif %}</span>
         </div>
+
         <div class="tarjeta-formulario">
-            <form method="POST" action="{{ url_for('nuevo_producto') }}" novalidate>
+            <form method="POST" action="{{ accion }}" novalidate>
                 {{ form.hidden_tag() }}
                 <div class="row g-3">
                     <div class="col-md-4">{{ campo(form.codigo, ayuda="Formato requerido: PRO-000") }}</div>
                     <div class="col-md-8">{{ campo(form.nombre) }}</div>
-                    <div class="col-12">{{ campo(form.categoria, "form-select") }}</div>
+                    <div class="col-md-6">{{ campo(form.categoria, "form-select") }}</div>
+                    <div class="col-md-6">{{ campo(form.proveedor_id, "form-select", ayuda="Relación mediante clave foránea.") }}</div>
                     <div class="col-12">{{ campo(form.descripcion) }}</div>
                     <div class="col-md-6">{{ campo(form.precio) }}</div>
                     <div class="col-md-6">{{ campo(form.stock, ayuda="Se permite 0 para mostrar el estado Agotado.") }}</div>
                 </div>
                 <div class="acciones-formulario">
-                    {{ form.submit(class="btn btn-naranja") }}
+                    {{ form.submit(class="btn btn-naranja", value="Guardar cambios" if modo_edicion else "Guardar producto") }}
                     <a class="btn btn-outline-secondary" href="{{ url_for('productos') }}">Cancelar</a>
                 </div>
             </form>

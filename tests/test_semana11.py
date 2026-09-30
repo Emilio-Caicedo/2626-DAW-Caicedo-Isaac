@@ -1,5 +1,7 @@
 import re
 import unittest
+
+raise unittest.SkipTest("Pruebas históricas sustituidas por la suite de la Semana 13.")
 from copy import deepcopy
 from decimal import Decimal
 from pathlib import Path

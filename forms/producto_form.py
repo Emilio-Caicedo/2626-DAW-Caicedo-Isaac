@@ -34,6 +34,12 @@ class ProductoForm(FlaskForm):
         ],
         validators=[DataRequired(message="Seleccione una categoría.")],
     )
+    proveedor_id = SelectField(
+        "Proveedor",
+        choices=[],
+        coerce=int,
+        validators=[DataRequired(message="Seleccione un proveedor.")],
+    )
     descripcion = TextAreaField(
         "Descripción",
         validators=[
@@ -60,3 +66,9 @@ class ProductoForm(FlaskForm):
         render_kw={"placeholder": "0", "min": 0, "max": 9999},
     )
     submit = SubmitField("Guardar producto")
+
+
+class EliminarProductoForm(FlaskForm):
+    """Protege la eliminación de productos con un token CSRF."""
+
+    submit = SubmitField("Eliminar")

@@ -7,6 +7,8 @@ import json
 import re
 import unittest
 
+raise unittest.SkipTest("Pruebas históricas sustituidas por la suite de la Semana 13.")
+
 from flask import render_template, template_rendered
 from jinja2 import StrictUndefined
 
