@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Panel de administración | EmiTech Store{% endblock %}
+{% block content %}
+<section class="modulo dashboard">
+    <div class="container">
+        <div class="dashboard-bienvenida">
+            <div>
+                <p class="etiqueta-modulo">SESIÓN ACTIVA · FLASK-LOGIN</p>
+                <h1>Hola, {{ current_user.nombre_completo }}</h1>
+                <p>Seleccione un módulo para continuar con la administración de EmiTech Store.</p>
+            </div>
+            <span class="estado-sesion"><span aria-hidden="true">●</span> Usuario autenticado</span>
+        </div>
+
+        <div class="row g-4 mt-1">
+            {% for endpoint, titulo_modulo, descripcion, operacion in [
+                ('productos', 'Productos', 'Consulte el catálogo MySQL y realice operaciones de registro, edición y eliminación.', 'CRUD MySQL'),
+                ('clientes', 'Clientes', 'Administre los datos de los clientes atendidos por la tienda.', 'Módulo privado'),
+                ('proveedores', 'Proveedores', 'Revise los distribuidores relacionados con el catálogo tecnológico.', 'Relaciones'),
+                ('facturacion', 'Facturación', 'Genere y consulte comprobantes demostrativos del sistema.', 'Ventas')
+            ] %}
+            <div class="col-md-6 col-xl-3">
+                <article class="dashboard-tarjeta">
+                    <span class="dashboard-tarjeta__tipo">{{ operacion }}</span>
+                    <h2>{{ titulo_modulo }}</h2>
+                    <p>{{ descripcion }}</p>
+                    <a class="btn btn-outline-primary w-100" href="{{ url_for(endpoint) }}">Abrir módulo</a>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="dashboard-seguridad mt-4">
+            <div>
+                <h2 class="h5">Sesión protegida</h2>
+                <p class="mb-0">Usuario actual: <strong>{{ current_user.usuario }}</strong>. Las páginas internas requieren autenticación.</p>
+            </div>
+            <form method="POST" action="{{ url_for('logout') }}">
+                {{ cerrar_sesion_form.hidden_tag() }}
+                {{ cerrar_sesion_form.submit(class="btn btn-outline-danger") }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

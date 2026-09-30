@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "components/campos_formulario.html" import campo %}
+{% block title %}Iniciar sesión | EmiTech Store{% endblock %}
+{% block content %}
+<section class="seccion-autenticacion">
+    <div class="container">
+        <div class="auth-contenedor">
+            <div class="auth-presentacion">
+                <img src="{{ url_for('static', filename='img/logo-emitech.png') }}" alt="EmiTech Store" class="auth-logo">
+                <p class="etiqueta-modulo">ACCESO ADMINISTRATIVO</p>
+                <h1>Bienvenido nuevamente</h1>
+                <p>Inicie sesión para gestionar productos, clientes, proveedores y facturación.</p>
+                <ul class="auth-beneficios">
+                    <li>Sesión administrada con Flask-Login.</li>
+                    <li>Credenciales verificadas mediante hash.</li>
+                    <li>Rutas internas protegidas.</li>
+                </ul>
+            </div>
+            <div class="auth-formulario">
+                <h2>Iniciar sesión</h2>
+                <p class="text-secondary">Ingrese las credenciales registradas en MySQL.</p>
+                <form method="POST" action="{{ url_for('login', next=siguiente) }}" novalidate>
+                    {{ form.hidden_tag() }}
+                    {{ campo(form.usuario) }}
+                    {{ campo(form.password) }}
+                    <div class="form-check mb-4">
+                        {{ form.recordar(class="form-check-input") }}
+                        {{ form.recordar.label(class="form-check-label") }}
+                    </div>
+                    {{ form.submit(class="btn btn-azul w-100") }}
+                </form>
+                <p class="auth-enlace">¿Todavía no tiene una cuenta? <a href="{{ url_for('registro') }}">Regístrese aquí</a>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -4,6 +4,15 @@ CREATE DATABASE IF NOT EXISTS emitech_store
 
 USE emitech_store;
 
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    nombre_completo VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS proveedores (
     id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(7) NOT NULL UNIQUE,
@@ -122,6 +131,9 @@ VALUES
     ('CLI-004', 'CRISTIAN DAVID CHIQUIMBA MENA', NULL, NULL, 'cd.chiquimbam@uea.edu.ec', 'Nueva Loja', 'Empresa');
 
 -- Consultas de comprobación para MySQL Workbench.
+SELECT id_usuario, usuario, nombre_completo, password_hash, activo, creado_en
+FROM usuarios
+ORDER BY id_usuario;
 SELECT * FROM proveedores ORDER BY id_proveedor;
 SELECT * FROM productos ORDER BY id_producto;
 SELECT

@@ -657,3 +657,219 @@ main { flex: 1; }
         width: 100%;
     }
 }
+
+/* Semana 14: autenticación y panel privado */
+
+.usuario-sesion {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 8px;
+    padding: 6px 10px;
+    color: #0D47A1;
+    background: #eef5ff;
+    border-radius: 999px;
+    font-size: .875rem;
+    font-weight: 700;
+}
+
+.usuario-sesion__icono,
+.estado-sesion span {
+    color: #198754;
+}
+
+.seccion-autenticacion {
+    display: flex;
+    align-items: center;
+    min-height: 72vh;
+    padding: 52px 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(255, 152, 0, .14), transparent 34%),
+        linear-gradient(135deg, #edf4ff 0%, #f8fafc 55%, #fff7eb 100%);
+}
+
+.auth-contenedor {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    width: min(100%, 980px);
+    margin: 0 auto;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #dbe5f2;
+    border-radius: 22px;
+    box-shadow: 0 20px 55px rgba(13, 71, 161, .16);
+}
+
+.auth-presentacion {
+    position: relative;
+    padding: 48px;
+    color: #ffffff;
+    background:
+        linear-gradient(150deg, rgba(13, 71, 161, .97), rgba(5, 38, 91, .97)),
+        url("../img/banner-principal.jpg") center / cover;
+}
+
+.auth-presentacion--registro {
+    background: linear-gradient(150deg, #0D47A1, #08306b 70%, #FF9800 160%);
+}
+
+.auth-presentacion .etiqueta-modulo {
+    color: #ffd89b;
+}
+
+.auth-presentacion h1 {
+    margin: 18px 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.auth-logo {
+    width: 116px;
+    padding: 8px;
+    background: #ffffff;
+    border-radius: 14px;
+}
+
+.auth-beneficios {
+    margin: 28px 0 0;
+    padding-left: 20px;
+}
+
+.auth-beneficios li {
+    margin-bottom: 10px;
+}
+
+.auth-seguridad {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 28px;
+    padding: 16px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 12px;
+}
+
+.auth-seguridad span {
+    color: #ffd89b;
+    font-family: Consolas, monospace;
+    font-size: .9rem;
+}
+
+.auth-formulario {
+    padding: 48px;
+}
+
+.auth-formulario h2 {
+    color: #0D47A1;
+}
+
+.auth-formulario .form-control {
+    min-height: 48px;
+}
+
+.auth-enlace {
+    margin: 24px 0 0;
+    text-align: center;
+}
+
+.auth-enlace a {
+    color: #0D47A1;
+    font-weight: 700;
+}
+
+.dashboard-bienvenida,
+.dashboard-seguridad {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #dfe5ef;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(13, 71, 161, .08);
+}
+
+.dashboard-bienvenida {
+    border-left: 6px solid #FF9800;
+}
+
+.dashboard-bienvenida h1 {
+    color: #0D47A1;
+}
+
+.estado-sesion {
+    flex-shrink: 0;
+    padding: 8px 13px;
+    color: #205b30;
+    background: #e9f4eb;
+    border-radius: 999px;
+    font-size: .875rem;
+    font-weight: 700;
+}
+
+.dashboard-tarjeta {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #dfe5ef;
+    border-top: 5px solid #0D47A1;
+    border-radius: 15px;
+    box-shadow: 0 7px 20px rgba(13, 71, 161, .08);
+}
+
+.dashboard-tarjeta__tipo {
+    align-self: flex-start;
+    margin-bottom: 18px;
+    padding: 4px 9px;
+    color: #815000;
+    background: #fff3dc;
+    border-radius: 7px;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.dashboard-tarjeta h2 {
+    color: #0D47A1;
+    font-size: 1.35rem;
+}
+
+.dashboard-tarjeta p {
+    flex: 1;
+}
+
+@media (max-width: 991px) {
+    .usuario-sesion {
+        margin: 8px 0;
+    }
+
+    .auth-contenedor {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-presentacion,
+    .auth-formulario {
+        padding: 34px;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-presentacion,
+    .auth-formulario {
+        padding: 24px;
+    }
+
+    .dashboard-bienvenida,
+    .dashboard-seguridad {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 22px;
+    }
+
+    .dashboard-seguridad form,
+    .dashboard-seguridad .btn {
+        width: 100%;
+    }
+}

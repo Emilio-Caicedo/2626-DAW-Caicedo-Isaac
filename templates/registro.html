@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "components/campos_formulario.html" import campo %}
+{% block title %}Crear cuenta | EmiTech Store{% endblock %}
+{% block content %}
+<section class="seccion-autenticacion">
+    <div class="container">
+        <div class="auth-contenedor">
+            <div class="auth-presentacion auth-presentacion--registro">
+                <img src="{{ url_for('static', filename='img/logo-emitech.png') }}" alt="EmiTech Store" class="auth-logo">
+                <p class="etiqueta-modulo">REGISTRO SEGURO</p>
+                <h1>Cree su cuenta</h1>
+                <p>La contraseña se transforma con Werkzeug antes de guardarse. MySQL nunca recibe el texto original.</p>
+                <div class="auth-seguridad">
+                    <strong>Protección aplicada</strong>
+                    <span>generate_password_hash()</span>
+                </div>
+            </div>
+            <div class="auth-formulario">
+                <h2>Registro de usuario</h2>
+                <p class="text-secondary">Todos los campos son obligatorios.</p>
+                <form method="POST" action="{{ url_for('registro') }}" novalidate>
+                    {{ form.hidden_tag() }}
+                    {{ campo(form.nombre_completo) }}
+                    {{ campo(form.usuario, ayuda="Letras, números y guion bajo; no utilice espacios.") }}
+                    {{ campo(form.password, ayuda="Mínimo 8 caracteres, una letra y un número.") }}
+                    {{ campo(form.confirmar_password) }}
+                    {{ form.submit(class="btn btn-naranja w-100") }}
+                </form>
+                <p class="auth-enlace">¿Ya tiene una cuenta? <a href="{{ url_for('login') }}">Inicie sesión</a>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

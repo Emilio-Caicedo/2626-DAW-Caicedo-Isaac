@@ -151,11 +151,13 @@ class Semana13Test(unittest.TestCase):
         self.base = BaseFalsa()
         self.parche = patch("app.conectar_bd", side_effect=lambda: ConexionFalsa(self.base))
         self.parche.start()
-        app.config.update(TESTING=True, WTF_CSRF_ENABLED=False)
+        self.login_disabled_anterior = app.config.get("LOGIN_DISABLED", False)
+        app.config.update(TESTING=True, WTF_CSRF_ENABLED=False, LOGIN_DISABLED=True)
         self.cliente = app.test_client()
 
     def tearDown(self):
         self.parche.stop()
+        app.config["LOGIN_DISABLED"] = self.login_disabled_anterior
 
     def producto_nuevo(self):
         return {

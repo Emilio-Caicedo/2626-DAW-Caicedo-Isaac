@@ -1,4 +1,4 @@
-{# Menú compartido. Conserva las rutas locales y las anclas de GitHub Pages. #}
+{# Menú compartido: la portada estática no intenta ejecutar Flask-Login. #}
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg" data-bs-theme="light" aria-label="Navegación principal">
         <div class="container">
@@ -11,20 +11,39 @@
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                     {% if modo_estatico|default(false) %}
-                    {# La portada pública no enlaza módulos que necesitan Flask. #}
-                    {% for ancla, etiqueta in [('inicio', 'Inicio'), ('quienes', 'Quiénes Somos'), ('productos', 'Productos'), ('registro', 'Registro'), ('video', 'Video'), ('contacto', 'Contacto')] %}
-                    <li class="nav-item"><a class="nav-link" href="#{{ ancla }}">{{ etiqueta }}</a></li>
-                    {% endfor %}
+                        {% for ancla, etiqueta in [('inicio', 'Inicio'), ('quienes', 'Quiénes Somos'), ('productos', 'Productos'), ('registro', 'Registro'), ('video', 'Video'), ('contacto', 'Contacto')] %}
+                        <li class="nav-item"><a class="nav-link" href="#{{ ancla }}">{{ etiqueta }}</a></li>
+                        {% endfor %}
+                        <li class="nav-item ms-lg-2"><a class="btn btn-naranja" href="#contacto">Contáctanos</a></li>
                     {% else %}
-                    {% for endpoint, etiqueta in [('inicio', 'Inicio'), ('productos', 'Productos'), ('clientes', 'Clientes'), ('proveedores', 'Proveedores'), ('facturacion', 'Facturación')] %}
-                    <li class="nav-item">
-                        <a class="nav-link{% if request.endpoint == endpoint %} active{% endif %}" href="{{ url_for(endpoint) }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>{{ etiqueta }}</a>
-                    </li>
-                    {% endfor %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if request.endpoint == 'inicio' %} active{% endif %}" href="{{ url_for('inicio') }}">Inicio</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                            {% for endpoint, etiqueta in [('dashboard', 'Panel'), ('productos', 'Productos'), ('clientes', 'Clientes'), ('proveedores', 'Proveedores'), ('facturacion', 'Facturación')] %}
+                            <li class="nav-item">
+                                <a class="nav-link{% if request.endpoint == endpoint %} active{% endif %}" href="{{ url_for(endpoint) }}">{{ etiqueta }}</a>
+                            </li>
+                            {% endfor %}
+                            <li class="nav-item usuario-sesion" aria-label="Usuario autenticado">
+                                <span class="usuario-sesion__icono" aria-hidden="true">●</span>
+                                <span>{{ current_user.usuario }}</span>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <form method="POST" action="{{ url_for('logout') }}" class="m-0">
+                                    {{ cerrar_sesion_form.hidden_tag() }}
+                                    {{ cerrar_sesion_form.submit(class="btn btn-outline-danger btn-sm") }}
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link{% if request.endpoint == 'login' %} active{% endif %}" href="{{ url_for('login') }}">Iniciar sesión</a>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-naranja" href="{{ url_for('registro') }}">Crear cuenta</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
-                    <li class="nav-item ms-lg-2">
-                        <a class="btn btn-naranja" href="{{ url_for('inicio', _anchor='contacto') }}">Contáctanos</a>
-                    </li>
                 </ul>
             </div>
         </div>

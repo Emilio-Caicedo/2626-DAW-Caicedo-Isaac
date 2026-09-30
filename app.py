@@ -1,7 +1,7 @@
-"""EmiTech Store - Proyecto Integrador, Semana 13.
+"""EmiTech Store - Proyecto Integrador, Semana 14.
 
-La aplicación utiliza MySQL como fuente real de datos para el módulo Productos
-y conserva los formularios, componentes y módulos desarrollados previamente.
+La aplicación conserva el CRUD MySQL e incorpora registro, hash de contraseñas,
+inicio de sesión, rutas protegidas y cierre de sesión mediante Flask-Login.
 """
 
 import os
@@ -10,26 +10,41 @@ from decimal import Decimal
 
 from dotenv import load_dotenv
 from flask import Flask, abort, flash, redirect, render_template, request, url_for
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_wtf.csrf import CSRFProtect
 from mysql.connector import Error, IntegrityError
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from conexion import conectar_bd
 from forms import (
     ClienteForm,
+    CerrarSesionForm,
     EliminarProductoForm,
     FacturacionForm,
+    LoginForm,
     ProductoForm,
     ProveedorForm,
+    UsuarioForm,
 )
+from models import Usuario
 
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv(
-    "SECRET_KEY", "emitech-clave-academica-semana-13"
+    "SECRET_KEY", "cambie-esta-clave-local-en-el-archivo-env"
+)
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
 )
 csrf = CSRFProtect(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "login"
+login_manager.login_message = "Inicie sesión para acceder a esta página."
+login_manager.login_message_category = "warning"
+login_manager.session_protection = "strong"
 
 NOMBRE_TIENDA = "EmiTech Store"
 TASA_IMPUESTO_DEMO = Decimal("0.15")
@@ -78,6 +93,89 @@ def _cerrar_recursos(cursor, conexion):
         cursor.close()
     if conexion is not None and conexion.is_connected():
         conexion.close()
+
+
+def buscar_usuario_por_id(id_usuario):
+    """Recupera una cuenta activa por su clave primaria para load_user()."""
+    conexion = None
+    cursor = None
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT id_usuario, usuario, nombre_completo, password_hash, activo
+            FROM usuarios
+            WHERE id_usuario = %s AND activo = TRUE
+            """,
+            (id_usuario,),
+        )
+        return cursor.fetchone()
+    finally:
+        _cerrar_recursos(cursor, conexion)
+
+
+def buscar_usuario_por_nombre(nombre_usuario):
+    """Obtiene la cuenta que será verificada durante el inicio de sesión."""
+    conexion = None
+    cursor = None
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT id_usuario, usuario, nombre_completo, password_hash, activo
+            FROM usuarios
+            WHERE usuario = %s AND activo = TRUE
+            """,
+            (nombre_usuario.strip().lower(),),
+        )
+        return cursor.fetchone()
+    finally:
+        _cerrar_recursos(cursor, conexion)
+
+
+def insertar_usuario(usuario, nombre_completo, password_hash):
+    """Registra una cuenta con un hash mediante INSERT parametrizado."""
+    conexion = None
+    cursor = None
+    try:
+        conexion = conectar_bd()
+        cursor = conexion.cursor()
+        cursor.execute(
+            """
+            INSERT INTO usuarios (usuario, nombre_completo, password_hash)
+            VALUES (%s, %s, %s)
+            """,
+            (usuario.strip().lower(), nombre_completo.strip(), password_hash),
+        )
+        conexion.commit()
+        return cursor.lastrowid
+    except Error:
+        if conexion is not None:
+            conexion.rollback()
+        raise
+    finally:
+        _cerrar_recursos(cursor, conexion)
+
+
+@login_manager.user_loader
+def cargar_usuario(id_usuario):
+    """Restaura desde MySQL el usuario identificado en la sesión."""
+    try:
+        fila = buscar_usuario_por_id(int(id_usuario))
+    except (TypeError, ValueError):
+        return None
+    except Error:
+        app.logger.exception("No fue posible recuperar la sesión desde MySQL")
+        return None
+    return Usuario.desde_fila(fila)
+
+
+@app.context_processor
+def componentes_de_sesion():
+    """Facilita el formulario CSRF de logout a todas las plantillas."""
+    return {"cerrar_sesion_form": CerrarSesionForm()}
 
 
 def obtener_productos():
@@ -326,7 +424,94 @@ def inicio():
     return render_template("index.html", titulo=NOMBRE_TIENDA, catalogo=obtener_catalogo())
 
 
+def _destino_interno_seguro(destino):
+    """Acepta únicamente rutas locales para evitar redirecciones externas."""
+    return bool(destino and destino.startswith("/") and not destino.startswith("//"))
+
+
+@app.route("/registro", methods=["GET", "POST"])
+def registro():
+    """Crea una cuenta y almacena solamente el hash de la contraseña."""
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
+    form = UsuarioForm()
+    if form.validate_on_submit():
+        nombre_usuario = form.usuario.data.strip().lower()
+        password_hash = generate_password_hash(form.password.data)
+        try:
+            insertar_usuario(
+                nombre_usuario,
+                form.nombre_completo.data,
+                password_hash,
+            )
+        except IntegrityError:
+            form.usuario.errors.append("El nombre de usuario ya está registrado.")
+        except Error:
+            app.logger.exception("No fue posible registrar el usuario")
+            flash(
+                "No se pudo registrar la cuenta. Verifique MySQL y la migración de la Semana 14.",
+                "danger",
+            )
+        else:
+            flash("Cuenta creada correctamente. Ya puede iniciar sesión.", "success")
+            return redirect(url_for("login"))
+
+    return render_template("registro.html", titulo="Crear cuenta", form=form)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Comprueba el hash y crea la sesión con Flask-Login."""
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
+    form = LoginForm()
+    siguiente = request.args.get("next", "")
+    if form.validate_on_submit():
+        try:
+            fila = buscar_usuario_por_nombre(form.usuario.data)
+        except Error:
+            app.logger.exception("No fue posible consultar el usuario")
+            flash("No se pudo conectar con MySQL. Intente nuevamente.", "danger")
+        else:
+            credenciales_validas = fila and check_password_hash(
+                fila["password_hash"], form.password.data
+            )
+            if credenciales_validas:
+                login_user(Usuario.desde_fila(fila), remember=form.recordar.data)
+                flash(f'Bienvenido, {fila["nombre_completo"]}.', "success")
+                if _destino_interno_seguro(siguiente):
+                    return redirect(siguiente)
+                return redirect(url_for("dashboard"))
+            flash("Usuario o contraseña incorrectos.", "danger")
+
+    return render_template(
+        "login.html", titulo="Iniciar sesión", form=form, siguiente=siguiente
+    )
+
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    """Panel privado de acceso a los módulos administrativos."""
+    return render_template("dashboard.html", titulo="Panel de administración")
+
+
+@app.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    """Destruye la sesión activa mediante una operación POST protegida."""
+    form = CerrarSesionForm()
+    if not form.validate_on_submit():
+        abort(400)
+    logout_user()
+    flash("La sesión se cerró correctamente.", "success")
+    return redirect(url_for("login"))
+
+
 @app.route("/productos")
+@login_required
 def productos():
     """Lista el catálogo recuperado desde MySQL mediante SELECT + JOIN."""
     try:
@@ -343,6 +528,7 @@ def productos():
 
 
 @app.route("/productos/nuevo", methods=["GET", "POST"])
+@login_required
 def nuevo_producto():
     """Valida el formulario y ejecuta INSERT sobre MySQL."""
     form = ProductoForm()
@@ -373,6 +559,7 @@ def nuevo_producto():
 
 
 @app.route("/productos/<int:id_producto>/editar", methods=["GET", "POST"])
+@login_required
 def editar_producto(id_producto):
     """Carga el registro y guarda sus cambios mediante UPDATE + WHERE."""
     try:
@@ -420,6 +607,7 @@ def editar_producto(id_producto):
 
 
 @app.route("/productos/<int:id_producto>/eliminar", methods=["POST"])
+@login_required
 def eliminar_producto(id_producto):
     """Procesa una eliminación protegida con CSRF y DELETE + WHERE."""
     form = EliminarProductoForm()
@@ -444,6 +632,7 @@ def eliminar_producto(id_producto):
 
 
 @app.route("/clientes")
+@login_required
 def clientes():
     return render_template(
         "clientes.html", titulo="Clientes", clientes=CLIENTES,
@@ -452,6 +641,7 @@ def clientes():
 
 
 @app.route("/clientes/nuevo", methods=["GET", "POST"])
+@login_required
 def nuevo_cliente():
     form = ClienteForm()
     if form.validate_on_submit():
@@ -470,6 +660,7 @@ def nuevo_cliente():
 
 
 @app.route("/proveedores")
+@login_required
 def proveedores():
     return render_template(
         "proveedores.html", titulo="Proveedores", proveedores=PROVEEDORES,
@@ -478,6 +669,7 @@ def proveedores():
 
 
 @app.route("/proveedores/nuevo", methods=["GET", "POST"])
+@login_required
 def nuevo_proveedor():
     form = ProveedorForm()
     if form.validate_on_submit():
@@ -498,6 +690,7 @@ def nuevo_proveedor():
 
 
 @app.route("/facturacion")
+@login_required
 def facturacion():
     completar_totales_factura()
     return render_template(
@@ -508,6 +701,7 @@ def facturacion():
 
 
 @app.route("/facturacion/nueva", methods=["GET", "POST"])
+@login_required
 def nueva_factura():
     form = FacturacionForm()
     try:
