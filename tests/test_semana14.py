@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from mysql.connector import IntegrityError
+from psycopg import IntegrityError
 from werkzeug.security import check_password_hash
 
 from app import app
@@ -218,8 +218,9 @@ class Semana14Test(unittest.TestCase):
         gitignore = (RAIZ / ".gitignore").read_text(encoding="utf-8")
         ejemplo = (RAIZ / ".env.example").read_text(encoding="utf-8")
         self.assertIn(".env", gitignore)
-        self.assertIn("SU_CONTRASENA_DE_MYSQL", ejemplo)
-        self.assertNotIn("MYSQL_PASSWORD=Emitech2026", ejemplo)
+        self.assertIn("DATABASE_URL=postgresql://", ejemplo)
+        self.assertIn("SU_CONTRASENA", ejemplo)
+        self.assertNotIn("Emitech2026", ejemplo)
 
 
 if __name__ == "__main__":

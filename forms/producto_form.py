@@ -72,3 +72,9 @@ class EliminarProductoForm(FlaskForm):
     """Protege la eliminación de productos con un token CSRF."""
 
     submit = SubmitField("Eliminar")
+
+
+class EliminarRegistroForm(FlaskForm):
+    """Formulario CSRF reutilizable para cualquier operación DELETE."""
+
+    submit = SubmitField("Eliminar")

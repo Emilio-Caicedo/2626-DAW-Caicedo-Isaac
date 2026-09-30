@@ -14,10 +14,10 @@
 
         <div class="row g-4 mt-1">
             {% for endpoint, titulo_modulo, descripcion, operacion in [
-                ('productos', 'Productos', 'Consulte el catálogo MySQL y realice operaciones de registro, edición y eliminación.', 'CRUD MySQL'),
-                ('clientes', 'Clientes', 'Administre los datos de los clientes atendidos por la tienda.', 'Módulo privado'),
-                ('proveedores', 'Proveedores', 'Revise los distribuidores relacionados con el catálogo tecnológico.', 'Relaciones'),
-                ('facturacion', 'Facturación', 'Genere y consulte comprobantes demostrativos del sistema.', 'Ventas')
+                ('productos', 'Productos', 'Consulte el catálogo PostgreSQL y realice registro, edición y eliminación.', 'CRUD PostgreSQL'),
+                ('clientes', 'Clientes', 'Administre clientes persistentes y sus facturas relacionadas.', 'CRUD PostgreSQL'),
+                ('proveedores', 'Proveedores', 'Administre distribuidores relacionados con los productos.', 'CRUD PostgreSQL'),
+                ('facturacion', 'Facturación', 'Genere facturas y consulte información mediante JOIN.', 'JOIN relacional')
             ] %}
             <div class="col-md-6 col-xl-3">
                 <article class="dashboard-tarjeta">

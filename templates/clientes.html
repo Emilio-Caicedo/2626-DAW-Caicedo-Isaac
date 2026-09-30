@@ -16,11 +16,23 @@
         <div class="tabla-contenedor">
             <div class="table-responsive" tabindex="0" role="region" aria-label="Directorio de clientes; desplazamiento horizontal en pantallas pequeñas">
                 <table class="table table-hover align-middle mb-0">
-                    <caption class="px-3">Clientes demostrativos de EmiTech Store.</caption>
-                    <thead><tr><th scope="col">Código</th><th scope="col">Cliente</th><th scope="col">Tipo</th><th scope="col">Correo electrónico</th><th scope="col">Ciudad</th></tr></thead>
+                    <caption class="px-3">Registros PostgreSQL y relación con Facturas.</caption>
+                    <thead><tr><th scope="col">Código</th><th scope="col">Cliente</th><th scope="col">Tipo</th><th scope="col">Correo electrónico</th><th scope="col">Ciudad</th><th scope="col">Facturas</th><th scope="col">Acciones</th></tr></thead>
                     <tbody>
                     {% for cliente in clientes %}
-                        <tr><th scope="row">{{ cliente.codigo }}</th><td>{{ cliente.nombre }}</td><td><span class="categoria-registro">{{ cliente.tipo }}</span></td><td>{{ cliente.correo }}</td><td>{{ cliente.ciudad }}</td></tr>
+                        <tr>
+                            <th scope="row">{{ cliente.codigo }}</th><td>{{ cliente.nombre }}</td>
+                            <td><span class="categoria-registro">{{ cliente.tipo }}</span></td>
+                            <td>{{ cliente.correo }}</td><td>{{ cliente.ciudad }}</td>
+                            <td><span class="badge bg-primary">{{ cliente.total_facturas }}</span></td>
+                            <td><div class="acciones-crud">
+                                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('editar_cliente', id_cliente=cliente.id) }}">Editar</a>
+                                <form method="POST" action="{{ url_for('eliminar_cliente', id_cliente=cliente.id) }}" onsubmit="return confirm('¿Eliminar el cliente {{ cliente.codigo }}?');">
+                                    {{ eliminar_form.hidden_tag() }}
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                                </form>
+                            </div></td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>

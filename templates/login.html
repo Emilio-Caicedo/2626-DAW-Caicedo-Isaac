@@ -18,7 +18,7 @@
             </div>
             <div class="auth-formulario">
                 <h2>Iniciar sesión</h2>
-                <p class="text-secondary">Ingrese las credenciales registradas en MySQL.</p>
+                <p class="text-secondary">Ingrese las credenciales registradas en PostgreSQL.</p>
                 <form method="POST" action="{{ url_for('login', next=siguiente) }}" novalidate>
                     {{ form.hidden_tag() }}
                     {{ campo(form.usuario) }}

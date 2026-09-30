@@ -1,0 +1,24 @@
+databases:
+  - name: emitech-store-db
+    databaseName: emitech_store
+    user: emitech_user
+    plan: free
+
+services:
+  - type: web
+    name: emitech-store
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    preDeployCommand: python inicializar_postgresql.py
+    startCommand: gunicorn app:app
+    healthCheckPath: /salud
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: emitech-store-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.13.7

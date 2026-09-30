@@ -6,7 +6,9 @@ from decimal import Decimal
 from pathlib import Path
 from unittest.mock import patch
 
-from mysql.connector import IntegrityError
+raise unittest.SkipTest("Pruebas históricas MySQL sustituidas por la suite PostgreSQL de la Semana 15.")
+
+from psycopg import IntegrityError
 
 from app import (
     PRODUCTOS_INICIALES,

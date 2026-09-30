@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 
 class Usuario(UserMixin):
-    """Representa un registro de MySQL para Flask-Login."""
+    """Representa un registro de PostgreSQL para Flask-Login."""
 
     def __init__(self, id_usuario, usuario, nombre_completo):
         self.id_usuario = int(id_usuario)
@@ -17,7 +17,7 @@ class Usuario(UserMixin):
 
     @classmethod
     def desde_fila(cls, fila):
-        """Construye el usuario a partir de un diccionario de MySQL."""
+        """Construye el usuario a partir de una fila de PostgreSQL."""
         if fila is None:
             return None
         return cls(

@@ -24,8 +24,16 @@
                         <dl class="datos-proveedor mb-0">
                             <dt>Ciudad</dt><dd>{{ proveedor.ciudad }}</dd>
                             <dt>Correo electrónico</dt><dd>{{ proveedor.correo }}</dd>
-                            <dt>Entrega estimada</dt><dd>{{ proveedor.entrega }}</dd>
+                            <dt>Entrega estimada</dt><dd>{{ proveedor.entrega_dias }} días</dd>
+                            <dt>Productos relacionados</dt><dd><span class="badge bg-primary">{{ proveedor.total_productos }}</span></dd>
                         </dl>
+                        <div class="acciones-crud mt-3">
+                            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('editar_proveedor', id_proveedor=proveedor.id) }}">Editar</a>
+                            <form method="POST" action="{{ url_for('eliminar_proveedor', id_proveedor=proveedor.id) }}" onsubmit="return confirm('¿Eliminar el proveedor {{ proveedor.codigo }}?');">
+                                {{ eliminar_form.hidden_tag() }}
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                            </form>
+                        </div>
                     </div>
                 </article>
             </div>

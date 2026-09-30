@@ -623,17 +623,17 @@ main { flex: 1; }
 
 .tabla-productos-sqlite th,
 .tabla-productos-sqlite td,
-.tabla-productos-mysql th,
-.tabla-productos-mysql td {
+.tabla-productos-postgresql th,
+.tabla-productos-postgresql td {
     vertical-align: middle;
 }
 
 .tabla-productos-sqlite tbody tr:hover,
-.tabla-productos-mysql tbody tr:hover {
+.tabla-productos-postgresql tbody tr:hover {
     background-color: rgba(13, 71, 161, 0.04);
 }
 
-.tabla-productos-mysql {
+.tabla-productos-postgresql {
     min-width: 1040px !important;
 }
 

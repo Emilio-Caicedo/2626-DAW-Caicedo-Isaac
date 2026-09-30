@@ -14,7 +14,7 @@
             <div>
                 <p class="etiqueta-modulo">EmiTech Store · Gestión relacional</p>
                 <h1>{{ titulo }}</h1>
-                <p>Consulta, registro, modificación y eliminación de productos en MySQL.</p>
+                <p>Consulta, registro, modificación y eliminación de productos en PostgreSQL.</p>
             </div>
             <span class="contador-registros">{{ productos|length }} productos</span>
         </div>
@@ -29,7 +29,7 @@
         <section class="seccion-tabla-productos" aria-labelledby="tituloTablaProductos">
             <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
                 <div>
-                    <p class="etiqueta-modulo mb-1">Persistencia relacional MySQL</p>
+                    <p class="etiqueta-modulo mb-1">Persistencia relacional PostgreSQL</p>
                     <h2 class="h4 text-primary mb-0" id="tituloTablaProductos">Productos almacenados</h2>
                 </div>
                 <small class="text-secondary">Origen: base de datos emitech_store</small>
@@ -37,7 +37,7 @@
 
             <div class="tabla-contenedor">
                 <div class="table-responsive" tabindex="0" role="region" aria-label="Productos almacenados; desplazamiento horizontal en pantallas pequeñas">
-                    <table class="table table-hover align-middle mb-0 tabla-productos-mysql">
+                    <table class="table table-hover align-middle mb-0 tabla-productos-postgresql">
                         <caption class="px-3">Registros recuperados mediante SELECT, INNER JOIN y fetchall().</caption>
                         <thead>
                             <tr>
@@ -117,7 +117,7 @@
         </div>
         {% else %}
         <div class="alert alert-info" role="status">
-            No hay productos disponibles. Compruebe la conexión con MySQL o registre el primer producto.
+            No hay productos disponibles. Compruebe DATABASE_URL o registre el primer producto.
         </div>
         {% endif %}
     </div>

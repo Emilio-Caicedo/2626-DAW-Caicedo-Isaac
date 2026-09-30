@@ -1,22 +1,20 @@
-"""Conexión centralizada con la base de datos MySQL de EmiTech Store."""
+"""Conexión centralizada con PostgreSQL para EmiTech Store."""
 
 import os
 
-import mysql.connector
+import psycopg
 from dotenv import load_dotenv
+from psycopg.rows import dict_row
 
 
 load_dotenv()
 
 
 def conectar_bd():
-    """Crea y devuelve una conexión MySQL usando variables de entorno."""
-    return mysql.connector.connect(
-        host=os.getenv("MYSQL_HOST", "localhost"),
-        port=int(os.getenv("MYSQL_PORT", "3306")),
-        user=os.getenv("MYSQL_USER", "root"),
-        password=os.getenv("MYSQL_PASSWORD", ""),
-        database=os.getenv("MYSQL_DATABASE", "emitech_store"),
-        charset="utf8mb4",
-        collation="utf8mb4_unicode_ci",
-    )
+    """Abre PostgreSQL usando la URL local o la suministrada por Render."""
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError(
+            "Falta DATABASE_URL. Copie .env.example como .env y complete la conexión."
+        )
+    return psycopg.connect(database_url, row_factory=dict_row)

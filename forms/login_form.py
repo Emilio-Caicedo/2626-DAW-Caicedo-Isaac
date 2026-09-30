@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length
 
 
 class LoginForm(FlaskForm):
-    """Valida las credenciales antes de consultarlas en MySQL."""
+    """Valida las credenciales antes de consultarlas en PostgreSQL."""
 
     usuario = StringField(
         "Usuario",
