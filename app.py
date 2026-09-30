@@ -500,9 +500,15 @@ def registro():
             )
         except IntegrityError:
             form.usuario.errors.append("El nombre de usuario ya está registrado.")
-        except ERRORES_BD:
-            app.logger.exception("No fue posible registrar el usuario")
-            flash("No se pudo guardar la cuenta en PostgreSQL.", "danger")
+        except ERRORES_BD as error:
+            codigo = getattr(error, "sqlstate", None) or "CONEXION"
+            app.logger.exception(
+                "No fue posible registrar el usuario [código %s]", codigo
+            )
+            flash(
+                f"No se pudo guardar la cuenta en PostgreSQL. Código: {codigo}.",
+                "danger",
+            )
         else:
             flash("Cuenta creada correctamente. Ya puede iniciar sesión.", "success")
             return redirect(url_for("login"))
@@ -881,4 +887,6 @@ def nueva_factura():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    # Se usa un solo proceso para que todas las solicitudes y errores aparezcan
+    # claramente en esta misma terminal durante las pruebas locales.
+    app.run(host="127.0.0.1", port=5000, debug=False)

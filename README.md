@@ -27,12 +27,14 @@ copy .env.example .env
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python inicializar_postgresql.py
+python diagnosticar_postgresql.py
 python -m unittest discover -s tests -v
 python app.py
 ```
 
-Antes de inicializar, cree la base local `emitech_store` y configure su
-`DATABASE_URL` real dentro de `.env`.
+Si utilizará PostgreSQL local, cree primero la base `emitech_store`. Si
+utilizará desde su computadora la base creada en Render, no cree otra base:
+pegue la **External Database URL** de Render como `DATABASE_URL` en `.env`.
 
 La explicación completa, prueba CRUD y pasos de Render están en
 [GUIA_SEMANA_15.md](GUIA_SEMANA_15.md).
@@ -47,6 +49,7 @@ templates/
 sql/esquema_postgresql.sql
 sql/esquema_mysql_semana14.sql
 inicializar_postgresql.py
+diagnosticar_postgresql.py
 render.yaml
 Procfile
 requirements.txt

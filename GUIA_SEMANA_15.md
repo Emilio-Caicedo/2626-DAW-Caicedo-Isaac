@@ -13,9 +13,11 @@
 
 ## 2. Probar localmente con PostgreSQL
 
-1. Cree una base vacía llamada `emitech_store` en PostgreSQL.
-2. Copie `.env.example` como `.env`.
-3. Cambie `SU_CONTRASENA` por su contraseña real de PostgreSQL.
+1. Copie `.env.example` como `.env`.
+2. Elija una conexión:
+   - PostgreSQL local: cree `emitech_store` y complete usuario y contraseña.
+   - PostgreSQL de Render: pegue la **External Database URL** en
+     `DATABASE_URL`. No debe crear manualmente otra base.
 4. Active el entorno virtual e instale dependencias:
 
 ```powershell
@@ -23,11 +25,16 @@
 python -m pip install -r requirements.txt
 ```
 
-5. Cree tablas y datos iniciales:
+5. Cree las tablas, verifíquelas y ejecute el diagnóstico:
 
 ```powershell
 python inicializar_postgresql.py
+python diagnosticar_postgresql.py
 ```
+
+El diagnóstico debe finalizar con
+`DIAGNÓSTICO COMPLETADO: la base está lista para EmiTech Store.` No guarda el
+usuario temporal utilizado para la comprobación.
 
 6. Ejecute las pruebas y la aplicación:
 
@@ -65,8 +72,8 @@ facturas: las claves foráneas los protegen y la aplicación muestra un aviso.
 3. Conecte el repositorio `2626-DAW-Caicedo-Isaac`.
 4. Render leerá `render.yaml` y propondrá un Web Service y una base PostgreSQL.
 5. Pulse **Apply** y espere a que ambos recursos terminen.
-6. El comando previo al despliegue ejecutará `inicializar_postgresql.py` y el
-   servicio iniciará con `gunicorn app:app`.
+6. En el plan gratuito, el comando de inicio ejecutará
+   `inicializar_postgresql.py` y luego iniciará `gunicorn app:app`.
 7. Abra la URL pública terminada en `.onrender.com`.
 8. Entre primero a `/registro` y cree su usuario; no existe una contraseña
    predeterminada dentro del repositorio.
@@ -78,8 +85,7 @@ Seleccione el plan disponible permitido por su cuenta o cree manualmente:
 - una base **Render Postgres** llamada `emitech-store-db`;
 - un **Web Service** Python conectado al repositorio;
 - Build Command: `pip install -r requirements.txt`;
-- Pre-Deploy Command: `python inicializar_postgresql.py`;
-- Start Command: `gunicorn app:app`;
+- Start Command: `python inicializar_postgresql.py && gunicorn app:app`;
 - variable `DATABASE_URL`: Internal Database URL de Render Postgres;
 - variable `SECRET_KEY`: valor aleatorio largo;
 - Health Check Path: `/salud`.

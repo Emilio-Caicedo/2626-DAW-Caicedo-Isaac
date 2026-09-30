@@ -60,8 +60,12 @@ class Semana15Test(unittest.TestCase):
         render = (RAIZ / "render.yaml").read_text(encoding="utf-8")
         self.assertIn("type: web", render)
         self.assertIn("fromDatabase:", render)
-        self.assertIn("preDeployCommand: python inicializar_postgresql.py", render)
-        self.assertIn("startCommand: gunicorn app:app", render)
+        # El plan gratuito de Render no admite preDeployCommand. La
+        # inicialización idempotente se ejecuta antes de Gunicorn.
+        self.assertIn(
+            "startCommand: python inicializar_postgresql.py && gunicorn app:app",
+            render,
+        )
         self.assertIn("/salud", render)
         respuesta = self.cliente.get("/salud")
         self.assertEqual(respuesta.status_code, 200)
