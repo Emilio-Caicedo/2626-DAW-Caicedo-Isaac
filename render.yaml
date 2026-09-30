@@ -10,8 +10,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    preDeployCommand: python inicializar_postgresql.py
-    startCommand: gunicorn app:app
+    startCommand: python inicializar_postgresql.py && gunicorn app:app
     healthCheckPath: /salud
     envVars:
       - key: DATABASE_URL
