@@ -1,4 +1,4 @@
-"""EmiTech Store - Proyecto Integrador, Semana 15.
+"""EmiTech Store - Proyecto Final, Semana 16.
 
 Aplicación Flask con PostgreSQL, autenticación y operaciones CRUD protegidas.
 Productos, clientes y proveedores se almacenan en tablas relacionadas; el
